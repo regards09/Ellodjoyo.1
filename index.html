@@ -1,0 +1,2657 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Ello Djoyo Laundry - Sistem Kasir Pintar POS</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts Inter & JetBrains Mono -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <!-- html2canvas untuk konversi struk ke Gambar PNG -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .mono-font {
+            font-family: 'JetBrains Mono', monospace;
+        }
+        /* Transisi Lembut */
+        .transition-all-300 {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        /* Sembunyikan scrollbar */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 min-h-screen text-slate-800 flex flex-col transition-colors duration-300 pb-20 sm:pb-6">
+
+    <!-- HEADER BAR KASIR (Optimized for Mobile Height) -->
+    <nav id="app-navbar" class="bg-gradient-to-r from-sky-500 via-sky-600 to-blue-600 text-white shadow-md py-2.5 sm:py-3 px-4 sticky top-0 z-40">
+        <div class="max-w-6xl mx-auto flex justify-between items-center">
+            <div class="flex items-center gap-2.5">
+                <!-- LOGO BULAT VEKTOR ELLODJOYO LAUNDRY -->
+                <div class="bg-white p-0.5 rounded-full overflow-hidden w-9 h-9 sm:w-12 sm:h-12 flex items-center justify-center shrink-0 shadow-md">
+                    <svg class="w-full h-full" viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="250" cy="250" r="240" fill="#2d5fc2" />
+                        <circle cx="250" cy="250" r="226" fill="#FFFFFF" />
+                        <circle cx="250" cy="250" r="218" fill="#2d5fc2" />
+                        <path d="M 40 220 A 210 210 0 0 1 460 220 Z" fill="#FFC72C" />
+                        <rect x="200" y="125" width="100" height="145" rx="14" fill="#FFFFFF" stroke="#2d5fc2" stroke-width="8" />
+                        <line x1="200" y1="165" x2="300" y2="165" stroke="#2d5fc2" stroke-width="5" />
+                        <circle cx="215" cy="145" r="5" fill="#2d5fc2" />
+                        <circle cx="228" cy="145" r="5" fill="#2d5fc2" />
+                        <rect x="245" y="137" width="45" height="16" rx="4" fill="#FFFFFF" stroke="#2d5fc2" stroke-width="4" />
+                        <circle cx="250" cy="215" r="38" fill="#FFFFFF" stroke="#FFC72C" stroke-width="6" />
+                        <circle cx="250" cy="215" r="30" fill="#E2F1FF" stroke="#2d5fc2" stroke-width="5" />
+                        <path d="M 223 218 Q 235 204 250 218 T 277 218 A 27 27 0 0 1 223 218 Z" fill="#2d5fc2" />
+                        <rect x="215" y="105" width="70" height="12" rx="6" fill="#5FBDFF" stroke="#2d5fc2" stroke-width="4" />
+                        <rect x="222" y="93" width="56" height="12" rx="6" fill="#96EFFF" stroke="#2d5fc2" stroke-width="4" />
+                        <path d="M 125 215 L 133 245 A 5 5 0 0 0 138 249 L 167 249 A 5 5 0 0 0 172 245 L 180 215 Z" fill="#FFFFFF" stroke="#2d5fc2" stroke-width="5" />
+                        <circle cx="140" cy="208" r="10" fill="#FFC72C" stroke="#2d5fc2" stroke-width="4" />
+                        <circle cx="152" cy="203" r="11" fill="#5FBDFF" stroke="#2d5fc2" stroke-width="4" />
+                        <circle cx="165" cy="209" r="9" fill="#96EFFF" stroke="#2d5fc2" stroke-width="4" />
+                        <path d="M 326 200 L 326 182 Q 326 174 334 174 L 337 174 L 337 165 L 343 165 L 343 174 Q 352 174 352 186 L 352 243 A 5 5 0 0 1 347 248 L 331 248 A 5 5 0 0 1 326 243 Z" fill="#5FBDFF" stroke="#2d5fc2" stroke-width="5" />
+                        <rect x="333" y="195" width="12" height="28" rx="2" fill="#FFFFFF" stroke="#2d5fc2" stroke-width="3" />
+                        <path d="M 160 140 Q 160 148 168 148 Q 160 148 160 156 Q 160 148 152 148 Q 160 148 160 140 Z" fill="#FFFFFF" />
+                        <path d="M 335 130 Q 335 138 343 138 Q 335 138 335 146 Q 335 138 327 138 Q 335 138 335 130 Z" fill="#FFFFFF" />
+                        <path id="top-arch-nav" d="M 90 225 A 168 168 0 0 1 410 225" fill="none" />
+                        <text fill="#2d5fc2" font-size="25" font-family="Arial, sans-serif" font-weight="900" letter-spacing="4">
+                            <textPath href="#top-arch-nav" startOffset="50%" text-anchor="middle">BERSIH • RAPI • WANGI</textPath>
+                        </text>
+                        <text x="145" y="285" fill="#FFFFFF" font-size="20" font-family="Arial, sans-serif" font-weight="bold" text-anchor="middle">ESTD</text>
+                        <text x="355" y="285" fill="#FFFFFF" font-size="20" font-family="Arial, sans-serif" font-weight="bold" text-anchor="middle">2017</text>
+                        <text x="250" y="360" fill="#FFC72C" font-size="52" font-family="Impact, Arial, sans-serif" font-weight="900" text-anchor="middle" letter-spacing="1">ELLO DJOYO</text>
+                        <text x="250" y="395" fill="#FFFFFF" font-size="22" font-family="Arial, sans-serif" font-weight="bold" text-anchor="middle" letter-spacing="6">LAUNDRY</text>
+                        <text x="250" y="420" fill="#FFFFFF" font-size="13" font-family="Arial, sans-serif" font-weight="bold" text-anchor="middle" letter-spacing="1.5">SIDOREJO - KEDUNGTUBAN</text>
+                        <rect x="175" y="435" width="150" height="30" rx="15" fill="#FFC72C" />
+                        <text x="250" y="447" fill="#000000" font-size="9" font-family="Arial, sans-serif" font-weight="900" text-anchor="middle">WA: 081237037342</text>
+                        <text x="250" y="459" fill="#000000" font-size="9" font-family="Arial, sans-serif" font-weight="900" text-anchor="middle">081237037342</text>
+                    </svg>
+                </div>
+                <div>
+                    <h1 id="navbar-title" class="text-xs sm:text-md font-extrabold tracking-wide leading-tight">Ello Djoyo Laundry</h1>
+                    <p id="navbar-subtitle" class="text-[8px] sm:text-[9px] text-sky-100">Sistem Kasir & POS Cerdas</p>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-1.5">
+                <div class="bg-white/20 text-white border border-white/25 px-2 py-0.5 rounded-full text-[8px] sm:text-[10px] font-extrabold uppercase flex items-center gap-1">
+                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>ACTIVE
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- NATIVE STICKY BOTTOM NAVIGATION BAR (Khusus Handphone / Layar Kecil) -->
+    <div class="sm:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 shadow-xl flex justify-around items-center py-2 px-1 z-50 pb-safe-bottom">
+        <button onclick="switchAdminTab('dashboard')" id="bottom-tab-dashboard" class="flex flex-col items-center gap-0.5 text-sky-600">
+            <i class="fa-solid fa-chart-pie text-lg"></i>
+            <span class="text-[9px] font-bold">Beranda</span>
+        </button>
+        <button onclick="switchAdminTab('generator')" id="bottom-tab-generator" class="flex flex-col items-center gap-0.5 text-slate-400">
+            <i class="fa-solid fa-file-invoice-dollar text-lg"></i>
+            <span class="text-[9px] font-bold">Buat Nota</span>
+        </button>
+        <button onclick="switchAdminTab('customers')" id="bottom-tab-customers" class="flex flex-col items-center gap-0.5 text-slate-400">
+            <i class="fa-solid fa-users-viewfinder text-lg"></i>
+            <span class="text-[9px] font-bold">Pelanggan</span>
+        </button>
+        <button onclick="switchAdminTab('bookkeeping')" id="bottom-tab-bookkeeping" class="flex flex-col items-center gap-0.5 text-slate-400">
+            <i class="fa-solid fa-book-bookmark text-lg"></i>
+            <span class="text-[9px] font-bold">Keuangan</span>
+        </button>
+        <button onclick="switchAdminTab('history')" id="bottom-tab-history" class="flex flex-col items-center gap-0.5 text-slate-400">
+            <i class="fa-solid fa-clock-rotate-left text-lg"></i>
+            <span class="text-[9px] font-bold">Arsip</span>
+        </button>
+        <button onclick="switchAdminTab('settings')" id="bottom-tab-settings" class="flex flex-col items-center gap-0.5 text-slate-400">
+            <i class="fa-solid fa-sliders text-lg"></i>
+            <span class="text-[9px] font-bold">Setelan</span>
+        </button>
+    </div>
+
+    <!-- CONTAINER WORKSPACE KASIR UTAMA -->
+    <main class="flex-grow max-w-6xl w-full mx-auto px-3 sm:px-4 py-3 sm:py-6 flex flex-col gap-4 sm:gap-6">
+        
+        <!-- Tab Navigasi Internal (Tersembunyi di Mobile) -->
+        <div class="hidden sm:flex bg-white p-1.5 rounded-2xl border border-slate-200 shadow-sm overflow-x-auto whitespace-nowrap gap-1 no-scrollbar scroll-smooth shrink-0">
+            <button onclick="switchAdminTab('dashboard')" id="tab-admin-dashboard" class="shrink-0 px-4 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 bg-sky-600 text-white">
+                <i class="fa-solid fa-chart-pie"></i> Dashboard
+            </button>
+            <button onclick="switchAdminTab('generator')" id="tab-admin-generator" class="shrink-0 px-4 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 text-slate-600 hover:bg-slate-50">
+                <i class="fa-solid fa-file-invoice-dollar"></i> Buat Nota (Hybrid)
+            </button>
+            <button onclick="switchAdminTab('customers')" id="tab-admin-customers" class="shrink-0 px-4 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 text-slate-600 hover:bg-slate-50">
+                <i class="fa-solid fa-users-viewfinder"></i> Data Pelanggan
+            </button>
+            <button onclick="switchAdminTab('bookkeeping')" id="tab-admin-bookkeeping" class="shrink-0 px-4 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 text-slate-600 hover:bg-slate-50">
+                <i class="fa-solid fa-book-bookmark"></i> Pembukuan
+            </button>
+            <button onclick="switchAdminTab('history')" id="tab-admin-history" class="shrink-0 px-4 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 text-slate-600 hover:bg-slate-50">
+                <i class="fa-solid fa-clock-rotate-left"></i> Riwayat Nota
+            </button>
+            <button onclick="switchAdminTab('settings')" id="tab-admin-settings" class="shrink-0 px-4 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 text-slate-600 hover:bg-slate-50">
+                <i class="fa-solid fa-sliders"></i> Pengaturan
+            </button>
+        </div>
+
+        <!-- ============================================== -->
+        <!-- TAB ADMIN: DASHBOARD -->
+        <!-- ============================================== -->
+        <div id="tab-content-dashboard" class="flex flex-col gap-4 sm:gap-6">
+            <!-- Banner Dashboard -->
+            <div class="bg-gradient-to-br from-sky-950 to-sky-900 text-white rounded-3xl p-4 sm:p-6 shadow-lg relative overflow-hidden border border-sky-850">
+                <div class="absolute -right-6 -bottom-6 text-[100px] text-sky-850 pointer-events-none opacity-30">
+                    <i class="fa-solid fa-cash-register"></i>
+                </div>
+                <div class="relative z-10">
+                    <span class="bg-amber-400 text-slate-900 text-[8px] sm:text-[9px] font-extrabold px-2.5 py-1 rounded-full uppercase tracking-wider">Workspace Terintegrasi</span>
+                    <h2 class="text-base sm:text-2xl font-black tracking-tight mt-2.5">Sistem POS Ello Djoyo Laundry 💻</h2>
+                    <p class="text-sky-200 text-[10px] sm:text-xs mt-1 leading-relaxed max-w-2xl">
+                        Kelola cucian kiloan, bijian, dan meteran dalam satu nota hybrid terpadu. Dukungan database kontak internal, pembukuan finansial modern, dan kirim nota struk digital secara langsung.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Kartu Statistik Finansial -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-2.5 sm:gap-4">
+                <div class="bg-white p-3 rounded-2xl border border-slate-200 shadow-sm flex flex-col gap-0.5">
+                    <span class="text-[8px] sm:text-[9px] font-extrabold text-slate-400 uppercase tracking-wider">Omset Lunas</span>
+                    <h4 id="stat-revenue" class="text-xs sm:text-base font-black text-emerald-600">Rp 0</h4>
+                    <p class="text-[7.5px] text-slate-450">Dari status terbayar</p>
+                </div>
+                <div class="bg-white p-3 rounded-2xl border border-slate-200 shadow-sm flex flex-col gap-0.5">
+                    <span class="text-[8px] sm:text-[9px] font-extrabold text-slate-400 uppercase tracking-wider">Piutang Kasir</span>
+                    <h4 id="stat-unpaid" class="text-xs sm:text-base font-black text-rose-600">Rp 0</h4>
+                    <p id="stat-unpaid-desc" class="text-[7.5px] text-rose-500 font-bold">0 Nota</p>
+                </div>
+                <div class="bg-white p-3 rounded-2xl border border-slate-200 shadow-sm flex flex-col gap-0.5">
+                    <span class="text-[8px] sm:text-[9px] font-extrabold text-slate-400 uppercase tracking-wider">Pelanggan</span>
+                    <h4 id="stat-total-customers" class="text-xs sm:text-base font-black text-indigo-600">0 Orang</h4>
+                    <p class="text-[7.5px] text-slate-450">Telah terdaftar</p>
+                </div>
+                <div class="bg-white p-3 rounded-2xl border border-slate-200 shadow-sm flex flex-col gap-0.5">
+                    <span class="text-[8px] sm:text-[9px] font-extrabold text-slate-400 uppercase tracking-wider font-extrabold">Total Nota</span>
+                    <h4 id="stat-total-notes" class="text-xs sm:text-base font-black text-slate-700">0 Transaksi</h4>
+                    <p class="text-[7.5px] text-slate-450">Di database lokal</p>
+                </div>
+            </div>
+
+            <!-- Quick Actions & 3 Transaksi Terbaru -->
+            <div class="grid grid-cols-1 md:grid-cols-12 gap-4">
+                <!-- Aksi Cepat Kasir -->
+                <div class="bg-white p-4 sm:p-6 rounded-3xl border border-slate-200 shadow-sm flex flex-col gap-3 md:col-span-4">
+                    <h3 class="font-bold text-slate-800 text-[10px] sm:text-xs flex items-center gap-2 uppercase tracking-wider border-b border-slate-100 pb-2">
+                        <i class="fa-solid fa-bolt text-amber-500"></i> Menu Akses Cepat
+                    </h3>
+                    <div class="flex flex-col gap-2">
+                        <button onclick="switchAdminTab('generator'); resetFormToNew();" class="py-2.5 px-3.5 rounded-xl bg-sky-50 text-sky-700 hover:bg-sky-100 font-bold text-xs text-left flex items-center justify-between transition-all min-h-[44px]">
+                            <span><i class="fa-solid fa-file-invoice-dollar mr-2"></i> Buat Nota Baru</span>
+                            <i class="fa-solid fa-angle-right text-[10px]"></i>
+                        </button>
+                        <button onclick="switchAdminTab('customers');" class="py-2.5 px-3.5 rounded-xl bg-indigo-50 text-indigo-700 hover:bg-indigo-100 font-bold text-xs text-left flex items-center justify-between transition-all min-h-[44px]">
+                            <span><i class="fa-solid fa-user-plus mr-2"></i> Tambah Pelanggan</span>
+                            <i class="fa-solid fa-angle-right text-[10px]"></i>
+                        </button>
+                        <button onclick="insertDemoData()" class="py-2.5 px-3.5 rounded-xl bg-emerald-50 text-emerald-700 hover:bg-emerald-100 font-bold text-xs text-left flex items-center justify-between transition-all min-h-[44px]">
+                            <span><i class="fa-solid fa-database mr-2"></i> Isi Data Demo Praktis</span>
+                            <i class="fa-solid fa-angle-right text-[10px]"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 3 Transaksi Riwayat Kasir Terakhir -->
+                <div class="bg-white p-4 sm:p-6 rounded-3xl border border-slate-200 shadow-sm flex flex-col gap-3.5 md:col-span-8">
+                    <div class="flex justify-between items-center border-b border-slate-100 pb-2">
+                        <h3 class="font-bold text-slate-800 text-[10px] sm:text-xs flex items-center gap-2 uppercase tracking-wider">
+                            <i class="fa-solid fa-clock-rotate-left text-slate-600"></i> Transaksi Terbaru
+                        </h3>
+                        <button onclick="switchAdminTab('history')" class="text-sky-600 hover:text-sky-700 text-xs font-bold flex items-center gap-1">
+                            Lihat Semua <i class="fa-solid fa-angle-right"></i>
+                        </button>
+                    </div>
+
+                    <div id="recent-transactions-container" class="flex flex-col gap-2.5">
+                        <!-- Render dari JavaScript -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ============================================== -->
+        <!-- TAB ADMIN: GENERATOR NOTA (HYBRID) -->
+        <!-- ============================================== -->
+        <div id="tab-content-generator" class="hidden flex flex-col gap-4">
+            
+            <!-- Mobile Toggle Selector -->
+            <div class="lg:hidden flex bg-slate-200/70 p-1 rounded-xl shrink-0">
+                <button id="toggle-mobile-form-btn" onclick="toggleMobileGeneratorView('form')" class="flex-grow py-2.5 text-xs font-bold rounded-lg text-center transition-all bg-white text-sky-700 shadow-sm">
+                    <i class="fa-solid fa-pen-to-square mr-1"></i> Form Input Nota
+                </button>
+                <button id="toggle-mobile-sim-btn" onclick="toggleMobileGeneratorView('sim')" class="flex-grow py-2.5 text-xs font-bold rounded-lg text-center transition-all text-slate-655">
+                    <i class="fa-solid fa-mobile-screen mr-1"></i> Lihat Live Struk
+                </button>
+            </div>
+
+            <!-- Grid Layout Utama -->
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-6">
+                <!-- Form Input Data Nota di Sisi Kiri -->
+                <div id="mobile-form-panel" class="bg-white p-4 sm:p-6 rounded-3xl border border-slate-200 shadow-sm flex flex-col gap-4 lg:col-span-7">
+                    <div class="flex justify-between items-center border-b border-slate-100 pb-2">
+                        <h3 id="form-note-title" class="font-bold text-slate-800 text-xs sm:text-sm flex items-center gap-1.5">
+                            <i class="fa-solid fa-file-signature text-sky-600"></i> Rincian Nota Baru (Hybrid)
+                        </h3>
+                        <button id="btn-cancel-edit" onclick="resetFormToNew()" class="hidden text-rose-600 hover:text-rose-700 text-xs font-bold">
+                            <i class="fa-solid fa-xmark"></i> Batal
+                        </button>
+                    </div>
+
+                    <!-- Pemilihan Pelanggan & Impor CSV -->
+                    <div class="flex flex-col gap-1.5">
+                        <label class="block text-[9px] font-bold text-slate-400 uppercase tracking-wider">Pilih Pelanggan Terdaftar</label>
+                        <div class="grid grid-cols-1 sm:grid-cols-12 gap-2">
+                            <select id="note-pelanggan-select" onchange="selectCustomerToForm()" class="sm:col-span-6 px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-700 outline-none focus:ring-2 focus:ring-sky-500 min-h-[44px]">
+                                <option value="">-- Pilih dari Database --</option>
+                            </select>
+                            <div class="grid grid-cols-2 gap-2 sm:col-span-6">
+                                <label class="bg-sky-50 text-sky-700 hover:bg-sky-100 px-2 py-2 rounded-xl text-xs font-bold flex items-center justify-center gap-1 min-h-[44px] cursor-pointer">
+                                    <i class="fa-solid fa-file-csv text-base"></i> Impor CSV
+                                    <input type="file" accept=".csv" onchange="handleCSVImport(event)" class="hidden">
+                                </label>
+                                <button onclick="switchAdminTab('customers')" class="bg-indigo-50 text-indigo-700 hover:bg-indigo-100 px-2 py-2 rounded-xl text-xs font-bold flex items-center justify-center gap-1 min-h-[44px]">
+                                    <i class="fa-solid fa-user-plus"></i> Baru
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Input Kontak Manual -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-[9px] font-bold text-slate-400 uppercase tracking-wider mb-1">Nama Pelanggan (Manual/Baru)</label>
+                            <input type="text" id="note-pelanggan" value="Mb Jaju" class="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-700 outline-none focus:ring-2 focus:ring-sky-500 min-h-[44px]">
+                        </div>
+
+                        <div>
+                            <label class="block text-[9px] font-bold text-slate-400 uppercase tracking-wider mb-1">No. WhatsApp Pelanggan</label>
+                            <input type="tel" id="note-hp" value="081237037342" class="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-700 outline-none focus:ring-2 focus:ring-sky-500 min-h-[44px]">
+                        </div>
+                    </div>
+
+                    <!-- PANEL TAMBAH ITEM KE NOTA -->
+                    <div class="bg-sky-50/50 p-3 rounded-2xl border border-sky-100 flex flex-col gap-3">
+                        <h4 class="text-[10px] font-bold text-sky-850 flex items-center gap-1.5 uppercase tracking-wider">
+                            <i class="fa-solid fa-cart-plus"></i> Tambah Item Layanan Cucian
+                        </h4>
+                        
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                            <div>
+                                <label class="block text-[8px] font-bold text-slate-400 uppercase mb-0.5">Kategori</label>
+                                <select id="item-category-select" onchange="onItemCategoryChanged()" class="w-full px-2.5 py-2 bg-white border border-slate-200 rounded-lg text-xs font-semibold text-slate-700 outline-none min-h-[40px]">
+                                    <option value="KILOAN">Kiloan (Kg)</option>
+                                    <option value="BIJIAN">Bijian (Pcs)</option>
+                                    <option value="METERAN">Meteran (Meter)</option>
+                                </select>
+                            </div>
+                            <div class="sm:col-span-2">
+                                <label class="block text-[8px] font-bold text-slate-400 uppercase mb-0.5">Nama Layanan / Barang</label>
+                                <select id="item-name-select" onchange="onItemSelectionChanged()" class="w-full px-2.5 py-2 bg-white border border-slate-200 rounded-lg text-xs font-semibold text-slate-700 outline-none min-h-[40px]">
+                                    <!-- Diisi dinamis -->
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+                            <div>
+                                <label id="label-item-qty" class="block text-[8px] font-bold text-slate-400 uppercase mb-0.5">Jumlah</label>
+                                <input type="number" id="item-qty-input" value="1.0" step="0.1" class="w-full px-2.5 py-2 bg-white border border-slate-200 rounded-lg text-xs font-semibold text-slate-700 outline-none min-h-[40px]">
+                            </div>
+                            <div>
+                                <label class="block text-[8px] font-bold text-slate-400 uppercase mb-0.5">Harga Satuan (Rp)</label>
+                                <input type="number" id="item-price-input" value="4000" class="w-full px-2.5 py-2 bg-white border border-slate-200 rounded-lg text-xs font-semibold text-slate-700 outline-none min-h-[40px]">
+                            </div>
+                            <div class="flex items-end">
+                                <button onclick="addItemToCurrentNote()" class="w-full bg-sky-600 hover:bg-sky-700 text-white font-bold py-2 px-3 rounded-lg text-xs flex items-center justify-center gap-1 transition-all min-h-[40px]">
+                                    <i class="fa-solid fa-plus"></i> Masukkan Item
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- TABEL KERANJANG DAFTAR CUCIAN -->
+                    <div>
+                        <label class="block text-[9px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">Daftar Cucian di Nota Ini</label>
+                        <!-- Mobile Card List (tampak di HP) -->
+                        <div id="cart-mobile-list" class="block sm:hidden flex flex-col gap-2">
+                            <!-- Diisi dinamis dari JavaScript -->
+                        </div>
+
+                        <!-- Desktop Table List (tampak di Desktop) -->
+                        <div class="hidden sm:block overflow-x-auto rounded-xl border border-slate-150">
+                            <table class="w-full text-left text-xs border-collapse min-w-[340px]">
+                                <thead>
+                                    <tr class="bg-slate-50 text-slate-500 font-bold border-b border-slate-150">
+                                        <th class="p-2.5 text-[10px]">Deskripsi</th>
+                                        <th class="p-2.5 text-[10px]">Jumlah</th>
+                                        <th class="p-2.5 text-[10px]">Harga</th>
+                                        <th class="p-2.5 text-[10px]">Total</th>
+                                        <th class="p-2.5 text-center text-[10px]">Hapus</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="note-items-table-body" class="divide-y divide-slate-100">
+                                    <!-- Dirender dinamis dari JS -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Input Tambahan Nota -->
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 border-t border-slate-100 pt-4">
+                        <div>
+                            <label class="block text-[9px] font-bold text-slate-400 uppercase tracking-wider mb-1">No. Nota</label>
+                            <input type="text" id="note-nomor" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-700 outline-none min-h-[40px]">
+                        </div>
+
+                        <div>
+                            <label class="block text-[9px] font-bold text-slate-400 uppercase tracking-wider mb-1">Tanggal Masuk</label>
+                            <input type="text" id="note-tanggal" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-700 outline-none min-h-[40px]">
+                        </div>
+
+                        <div>
+                            <label class="block text-[9px] font-bold text-slate-400 uppercase tracking-wider mb-1">Aroma Parfum</label>
+                            <select id="note-parfum" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-700 outline-none min-h-[40px]">
+                                <option value="Sakura" selected>Sakura</option>
+                                <option value="Lavender">Lavender</option>
+                                <option value="Lily">Lily</option>
+                                <option value="Ocean Fresh">Ocean Fresh</option>
+                                <option value="Tanpa Parfum">Tanpa Parfum</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="block text-[9px] font-bold text-slate-400 uppercase tracking-wider mb-1">Kemasan Plastik (Rp)</label>
+                            <input type="number" id="note-plastik" value="1000" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-700 outline-none min-h-[40px]">
+                        </div>
+
+                        <div>
+                            <label class="block text-[9px] font-bold text-slate-400 uppercase tracking-wider mb-1">Diskon (Rp)</label>
+                            <input type="number" id="note-diskon" value="0" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-700 outline-none min-h-[40px]">
+                        </div>
+
+                        <div>
+                            <label class="block text-[9px] font-bold text-slate-400 uppercase tracking-wider mb-1">Status</label>
+                            <select id="note-status" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-extrabold text-slate-700 outline-none min-h-[40px]">
+                                <option value="BELUM BAYAR" selected>BELUM BAYAR</option>
+                                <option value="LUNAS">LUNAS</option>
+                            </select>
+                        </div>
+
+                        <div class="sm:col-span-3">
+                            <label class="block text-[9px] font-bold text-slate-400 uppercase tracking-wider mb-1">Alamat Pelanggan</label>
+                            <input type="text" id="note-alamat" placeholder="Diisi otomatis jika ada" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-700 outline-none min-h-[40px]">
+                        </div>
+
+                        <div class="sm:col-span-3">
+                            <label class="block text-[9px] font-bold text-slate-400 uppercase tracking-wider mb-1">Keterangan / Catatan</label>
+                            <textarea id="note-keterangan" rows="1.5" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-700 outline-none">-</textarea>
+                        </div>
+                    </div>
+
+                    <!-- Tombol Navigasi & Simpan Database -->
+                    <div class="flex flex-col gap-2 mt-2 border-t border-slate-100 pt-4">
+                        <button onclick="saveNoteToDatabase()" class="w-full bg-gradient-to-r from-sky-600 to-blue-600 hover:from-sky-700 hover:to-blue-700 text-white font-extrabold py-3.5 px-4 rounded-xl text-xs uppercase tracking-wider flex items-center justify-center gap-1.5 transition-all shadow-md active:scale-[0.98] min-h-[48px]">
+                            <i class="fa-solid fa-floppy-disk text-sm"></i> Simpan Transaksi Ke Database
+                        </button>
+                        <button onclick="triggerWATextReceipt()" class="w-full bg-gradient-to-r from-slate-800 to-slate-900 hover:from-slate-950 hover:to-black text-white font-bold py-3 px-4 rounded-xl text-xs flex items-center justify-center gap-1.5 transition-all min-h-[44px]">
+                            <i class="fa-brands fa-whatsapp text-sm"></i> Kirim Format Teks via WhatsApp
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Live HP Simulator di Sisi Kanan -->
+                <div id="mobile-sim-panel" class="hidden lg:flex lg:col-span-5 flex-col gap-4">
+                    <h4 class="font-bold text-slate-800 text-xs sm:text-sm flex items-center gap-2 px-1">
+                        <i class="fa-solid fa-mobile-screen-button text-sky-600"></i> Simulator Struk Elektronik
+                    </h4>
+
+                    <!-- Simulasi Tampilan WhatsApp Layar Ponsel Android -->
+                    <div class="bg-slate-900 rounded-[30px] p-2.5 shadow-xl border-4 border-slate-850 aspect-[9/18] max-w-[280px] mx-auto w-full relative overflow-hidden shrink-0">
+                        <div class="absolute top-3 left-1/2 transform -translate-x-1/2 w-16 h-3.5 bg-black rounded-full z-20 flex items-center justify-center">
+                            <div class="w-1.5 h-1.5 rounded-full bg-slate-900"></div>
+                        </div>
+
+                        <!-- Panel WhatsApp Chat Interface -->
+                        <div class="bg-[#efeae2] h-full rounded-[22px] overflow-hidden flex flex-col relative pt-4">
+                            <div class="bg-[#075e54] text-white p-2.5 pt-3.5 flex items-center gap-2 shadow z-10 shrink-0">
+                                <i class="fa-solid fa-arrow-left text-[10px]"></i>
+                                <div class="w-6 h-6 bg-white rounded-full flex items-center justify-center overflow-hidden shrink-0 shadow-sm">
+                                    <div class="bg-[#2d5fc2] text-white w-full h-full flex items-center justify-center font-black text-[9px]">ED</div>
+                                </div>
+                                <div class="leading-none flex-1">
+                                    <p class="font-bold text-[10px] tracking-wide">Ello Djoyo Laundry</p>
+                                    <span class="text-[7px] text-teal-200">Online</span>
+                                </div>
+                                <i class="fa-solid fa-phone text-[10px]"></i>
+                                <i class="fa-solid fa-ellipsis-vertical text-[10px]"></i>
+                            </div>
+
+                            <!-- WhatsApp Chat Body Area -->
+                            <div class="flex-grow p-1.5 overflow-y-auto no-scrollbar flex flex-col gap-2">
+                                <div class="bg-white text-[8px] text-slate-800 p-2 rounded-xl rounded-tl-none max-w-[85%] shadow-sm leading-relaxed self-start border border-slate-100">
+                                    Halo Kak, berikut adalah nota digital Anda. Silakan dicek kembali ya! 😊
+                                </div>
+
+                                <!-- Nota Grafis Struk di Chat Bubble -->
+                                <div id="admin-receipt-preview-bubble" class="bg-[#dcf8c6] p-1 rounded-xl rounded-tr-none max-w-[95%] shadow-sm self-end border border-teal-150 flex flex-col gap-1 w-full">
+                                    <div class="bg-white rounded-lg overflow-hidden p-2 shadow-xs border border-emerald-50/50 flex flex-col items-center">
+                                        <div class="w-8 h-8 mb-1.5 overflow-hidden rounded-full shadow-inner bg-slate-50 flex items-center justify-center">
+                                            <!-- Logo Bulat Vektor SVG Mini -->
+                                            <svg class="w-full h-full" viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg">
+                                                <circle cx="250" cy="250" r="240" fill="#2d5fc2" />
+                                                <circle cx="250" cy="250" r="226" fill="#FFFFFF" />
+                                                <circle cx="250" cy="250" r="218" fill="#2d5fc2" />
+                                                <path d="M 40 220 A 210 210 0 0 1 460 220 Z" fill="#FFC72C" />
+                                                <rect x="200" y="125" width="100" height="145" rx="14" fill="#FFFFFF" stroke="#2d5fc2" stroke-width="8" />
+                                                <line x1="200" y1="165" x2="300" y2="165" stroke="#2d5fc2" stroke-width="5" />
+                                                <rect x="245" y="137" width="45" height="16" rx="4" fill="#FFFFFF" stroke="#2d5fc2" stroke-width="4" />
+                                                <circle cx="250" cy="215" r="38" fill="#FFFFFF" stroke="#FFC72C" stroke-width="6" />
+                                                <circle cx="250" cy="215" r="30" fill="#E2F1FF" stroke="#2d5fc2" stroke-width="5" />
+                                                <path d="M 223 218 Q 235 204 250 218 T 277 218 A 27 27 0 0 1 223 218 Z" fill="#2d5fc2" />
+                                                <text x="250" y="360" fill="#FFC72C" font-size="52" font-family="Impact, Arial, sans-serif" font-weight="900" text-anchor="middle">ELLO DJOYO</text>
+                                            </svg>
+                                        </div>
+                                        <span id="bubble-no-nota" class="text-[6px] text-sky-700 font-black tracking-wide bg-sky-50 px-1 py-0.5 rounded-full">TRX/260530001</span>
+                                        
+                                        <div class="w-full mt-1.5 border-t border-dashed border-slate-200 pt-1 space-y-0.5 text-slate-700 font-semibold" style="font-size: 6px;">
+                                            <div class="flex justify-between"><span>Pelanggan</span><span id="bubble-pelanggan" class="font-bold text-slate-900">Mb Jaju</span></div>
+                                            <div class="border-t border-slate-100 my-0.5"></div>
+                                            <div id="bubble-items-summary" class="space-y-0.5">
+                                                <!-- Daftar Ringkas Item -->
+                                            </div>
+                                            <div class="flex justify-between text-sky-700 font-extrabold text-[7px] border-t border-dashed border-slate-150 pt-1"><span>Total</span><span id="bubble-total">Rp 71.000</span></div>
+                                        </div>
+                                    </div>
+                                    <div class="flex justify-between items-center text-[6px] text-emerald-800 px-0.5">
+                                        <span>Struk Gambar (PNG)</span>
+                                        <span class="opacity-50">Selesai ✔️</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tombol Aksi Grafis Premium -->
+                    <button onclick="generateVisualReceipt()" class="w-full bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-extrabold py-3.5 px-4 rounded-xl text-xs uppercase tracking-wider flex items-center justify-center gap-2 transition-all shadow-lg active:scale-[0.98] min-h-[48px]">
+                        <i class="fa-solid fa-image text-sm"></i> Buat & Kirim Gambar Nota (PNG)
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ============================================== -->
+        <!-- TAB ADMIN: DATA PELANGGAN -->
+        <!-- ============================================== -->
+        <div id="tab-content-customers" class="hidden grid grid-cols-1 md:grid-cols-12 gap-4 sm:gap-6">
+            <!-- Form Tambah/Edit Pelanggan -->
+            <div class="bg-white p-4 sm:p-5 rounded-3xl border border-slate-200 shadow-sm flex flex-col gap-3 md:col-span-5">
+                <h3 id="customer-form-title" class="font-bold text-slate-800 text-xs sm:text-sm flex items-center gap-2 border-b border-slate-100 pb-2">
+                    <i class="fa-solid fa-user-plus text-sky-600"></i> Tambah Pelanggan
+                </h3>
+                
+                <input type="hidden" id="customer-id-input">
+                <div class="flex flex-col gap-3">
+                    <!-- CSV IMPORT CONTAINER -->
+                    <div class="flex justify-between items-center bg-sky-50/50 p-2.5 rounded-xl border border-sky-100">
+                        <span class="text-[9px] font-bold text-sky-850"><i class="fa-solid fa-file-csv"></i> Impor Kontak CSV Baru</span>
+                        <label class="bg-sky-600 hover:bg-sky-700 text-white px-2.5 py-1.5 rounded-lg text-[9px] font-bold cursor-pointer transition-all flex items-center gap-1 shadow-sm">
+                            <i class="fa-solid fa-upload"></i> Pilih File
+                            <input type="file" accept=".csv" onchange="handleCSVImport(event)" class="hidden">
+                        </label>
+                    </div>
+
+                    <div>
+                        <label class="block text-[9px] font-bold text-slate-400 uppercase tracking-wider mb-0.5">Nama Lengkap</label>
+                        <input type="text" id="cust-name-input" placeholder="Masukkan nama..." class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-700 outline-none focus:bg-white min-h-[40px]">
+                    </div>
+                    <div>
+                        <label class="block text-[9px] font-bold text-slate-400 uppercase tracking-wider mb-0.5">No. HP / WhatsApp</label>
+                        <input type="tel" id="cust-phone-input" placeholder="Contoh: 081234567890" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-700 outline-none focus:bg-white min-h-[40px]">
+                    </div>
+                    <div>
+                        <label class="block text-[9px] font-bold text-slate-400 uppercase tracking-wider mb-0.5">Alamat Lengkap</label>
+                        <textarea id="cust-address-input" rows="2" placeholder="Nama Jalan, RT/RW, Dusun..." class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-700 outline-none focus:bg-white"></textarea>
+                    </div>
+
+                    <div class="flex gap-2 mt-1">
+                        <button onclick="saveCustomerToDatabase()" class="flex-grow bg-sky-600 hover:bg-sky-700 text-white font-bold py-2.5 px-4 rounded-xl text-xs transition-all min-h-[40px]">
+                            Simpan Data
+                        </button>
+                        <button id="btn-cancel-cust-edit" onclick="resetCustomerForm()" class="hidden bg-slate-100 hover:bg-slate-200 text-slate-500 font-bold py-2.5 px-4 rounded-xl text-xs transition-all min-h-[40px]">
+                            Batal
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- List Database Pelanggan -->
+            <div class="bg-white p-4 sm:p-5 rounded-3xl border border-slate-200 shadow-sm flex flex-col gap-3.5 md:col-span-7">
+                <div class="flex justify-between items-center border-b border-slate-100 pb-2">
+                    <h3 class="font-bold text-slate-800 text-xs sm:text-sm flex items-center gap-2">
+                        <i class="fa-solid fa-users-viewfinder text-sky-600"></i> Database Pelanggan
+                    </h3>
+                    <span id="cust-count-badge" class="bg-sky-100 text-sky-800 text-[9px] font-bold px-2 py-0.5 rounded-full">0 Orang</span>
+                </div>
+
+                <!-- Kolom Pencarian -->
+                <div class="relative">
+                    <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-400"><i class="fa-solid fa-magnifying-glass text-xs"></i></span>
+                    <input type="text" id="cust-search" oninput="renderCustomersList()" placeholder="Cari nama atau nomor HP..." class="w-full pl-8 pr-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-700 outline-none min-h-[40px]">
+                </div>
+
+                <div id="customers-list-container" class="flex flex-col gap-2 max-h-[380px] overflow-y-auto no-scrollbar">
+                    <!-- Dirender secara dinamis dari JS -->
+                </div>
+            </div>
+        </div>
+
+        <!-- ============================================== -->
+        <!-- TAB ADMIN: PEMBUKUAN -->
+        <!-- ============================================== -->
+        <div id="tab-content-bookkeeping" class="hidden flex flex-col gap-5 sm:gap-6">
+            <div class="bg-white p-4 sm:p-6 rounded-3xl border border-slate-200 shadow-sm flex flex-col gap-4">
+                <div class="flex flex-wrap justify-between items-center gap-2 border-b border-slate-100 pb-2">
+                    <div>
+                        <h3 class="font-extrabold text-slate-800 text-xs sm:text-md flex items-center gap-2">
+                            <i class="fa-solid fa-chart-line text-sky-600"></i> Laporan Keuangan
+                        </h3>
+                    </div>
+                    
+                    <div class="flex items-center gap-1 bg-slate-50 p-1 rounded-xl border border-slate-200">
+                        <button onclick="setBookkeepingTab('mingguan')" id="btn-book-mingguan" class="px-3 py-1 rounded-lg text-[10px] font-bold transition-all bg-sky-600 text-white shadow-xs">
+                            Mingguan
+                        </button>
+                        <button onclick="setBookkeepingTab('bulanan')" id="btn-book-bulanan" class="px-3 py-1 rounded-lg text-[10px] font-bold transition-all text-slate-650 hover:bg-slate-100">
+                            Bulanan
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Card KPIs Pembukuan -->
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                    <div class="bg-sky-50/50 p-3.5 rounded-2xl border border-sky-100 flex items-center gap-3">
+                        <div class="p-2.5 rounded-xl bg-sky-500 text-white shrink-0"><i class="fa-solid fa-wallet text-sm sm:text-base"></i></div>
+                        <div>
+                            <span class="text-[8px] font-bold text-sky-600 uppercase tracking-wider block">Pendapatan Lunas</span>
+                            <h4 id="book-total-revenue" class="text-xs sm:text-sm font-black text-slate-850">Rp 0</h4>
+                        </div>
+                    </div>
+                    <div class="bg-rose-50/50 p-3.5 rounded-2xl border border-rose-100 flex items-center gap-3">
+                        <div class="p-2.5 rounded-xl bg-rose-500 text-white shrink-0"><i class="fa-solid fa-file-invoice-dollar text-sm sm:text-base"></i></div>
+                        <div>
+                            <span class="text-[8px] font-bold text-rose-600 uppercase tracking-wider block">Piutang Kasir</span>
+                            <h4 id="book-total-unpaid" class="text-xs sm:text-sm font-black text-slate-850">Rp 0</h4>
+                        </div>
+                    </div>
+                    <div class="bg-indigo-50/50 p-3.5 rounded-2xl border border-indigo-100 flex items-center gap-3">
+                        <div class="p-2.5 rounded-xl bg-indigo-500 text-white shrink-0"><i class="fa-solid fa-weight-hanging text-sm sm:text-base"></i></div>
+                        <div>
+                            <span class="text-[8px] font-bold text-indigo-600 uppercase tracking-wider block">Volume Proses</span>
+                            <h4 id="book-total-volume" class="text-xs sm:text-sm font-black text-slate-850">0 Unit</h4>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Representasi Grafik Batang SVG -->
+                <div class="flex flex-col gap-2 bg-slate-50 p-3 rounded-2xl border border-slate-200">
+                    <h4 class="text-[10px] font-bold text-slate-700 uppercase tracking-wider">Visualisasi Tren Finansial</h4>
+                    <div id="bookkeeping-chart-container" class="w-full overflow-x-auto py-1 no-scrollbar">
+                        <!-- Render diagram batang SVG dinamis dari JS -->
+                    </div>
+                </div>
+
+                <!-- Detail Tabel Pembukuan -->
+                <div class="flex flex-col gap-3">
+                    <h4 class="text-[10px] font-bold text-slate-700 uppercase tracking-wider">Breakdown Transaksi Periodik</h4>
+                    <div class="overflow-x-auto rounded-xl border border-slate-200">
+                        <table class="w-full text-left text-xs border-collapse min-w-[500px]">
+                            <thead>
+                                <tr class="bg-slate-100 text-slate-500 font-bold border-b border-slate-200">
+                                    <th class="p-3">Periode</th>
+                                    <th class="p-3">Total Nota</th>
+                                    <th class="p-3">Volume Unit</th>
+                                    <th class="p-3">Omset Lunas</th>
+                                    <th class="p-3">Piutang</th>
+                                    <th class="p-3 text-right">Total Kotor</th>
+                                </tr>
+                            </thead>
+                            <tbody id="bookkeeping-table-body" class="text-slate-700 divide-y divide-slate-100">
+                                <!-- Render dinamis -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ============================================== -->
+        <!-- TAB ADMIN: RIWAYAT NOTA -->
+        <!-- ============================================== -->
+        <div id="tab-content-history" class="hidden bg-white p-4 sm:p-6 rounded-3xl border border-slate-200 shadow-sm flex flex-col gap-4">
+            <div class="flex flex-wrap justify-between items-center gap-2 border-b border-slate-100 pb-2">
+                <h3 class="font-bold text-slate-800 text-xs sm:text-sm flex items-center gap-2">
+                    <i class="fa-solid fa-list-check text-sky-600"></i> Riwayat Nota Kasir
+                </h3>
+                <button onclick="requestClearAllHistoryData()" class="text-rose-600 hover:bg-rose-50 border border-rose-100 px-3 py-1.5 rounded-xl text-[9px] font-bold transition-all min-h-[32px]">
+                    <i class="fa-solid fa-trash-can"></i> Kosongkan
+                </button>
+            </div>
+
+            <!-- Filter & Search Input -->
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                <div class="relative sm:col-span-2">
+                    <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-400"><i class="fa-solid fa-magnifying-glass text-xs"></i></span>
+                    <input type="text" id="history-search" oninput="renderHistoryList()" placeholder="Cari nama atau nomor nota..." class="w-full pl-8 pr-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-700 outline-none min-h-[40px]">
+                </div>
+                <div>
+                    <select id="history-filter" onchange="renderHistoryList()" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-700 outline-none min-h-[40px]">
+                        <option value="SEMUA">Semua Status</option>
+                        <option value="LUNAS">Status Lunas</option>
+                        <option value="BELUM BAYAR">Status Belum Bayar</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- List Riwayat Nota Render Area -->
+            <div id="history-list-container" class="flex flex-col gap-3 max-h-[500px] overflow-y-auto no-scrollbar">
+                <!-- Dirender secara dinamis dari JavaScript -->
+            </div>
+        </div>
+
+        <!-- ============================================== -->
+        <!-- TAB ADMIN: PENGATURAN OUTLET -->
+        <!-- ============================================== -->
+        <div id="tab-content-settings" class="hidden bg-white p-4 sm:p-6 rounded-3xl border border-slate-200 shadow-sm flex flex-col gap-4">
+            <h3 class="font-bold text-slate-800 text-xs sm:text-sm flex items-center gap-2 border-b border-slate-100 pb-2">
+                <i class="fa-solid fa-sliders text-sky-600"></i> Pengaturan Toko & Tarif
+            </h3>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-[9px] font-bold text-slate-400 uppercase tracking-wider mb-1">Nama Toko / Laundry</label>
+                    <input type="text" id="set-laundry-name" value="Ello Djoyo Laundry" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-700 outline-none min-h-[40px]">
+                </div>
+
+                <div>
+                    <label class="block text-[9px] font-bold text-slate-400 uppercase tracking-wider mb-1">No. WhatsApp Admin</label>
+                    <input type="tel" id="set-laundry-phone" value="081237037342" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-700 outline-none min-h-[40px]">
+                </div>
+
+                <div class="sm:col-span-2">
+                    <label class="block text-[9px] font-bold text-slate-400 uppercase tracking-wider mb-1">Alamat Lengkap Toko</label>
+                    <textarea id="set-laundry-address" rows="2" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-700 outline-none">Desa Sidorejo 04/02 -Kedungtuban-Blora -Jawa Tengah (58381) (NIB.0268010022345)</textarea>
+                </div>
+
+                <div class="sm:col-span-2">
+                    <label class="block text-[9px] font-bold text-slate-400 uppercase tracking-wider mb-1">Metode Pembayaran</label>
+                    <input type="text" id="set-laundry-bank" value="No Rekening BRI 021501054687508 (a/n Siti Latifah)" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-700 outline-none min-h-[40px]">
+                </div>
+
+                <div>
+                    <label class="block text-[9px] font-bold text-slate-400 uppercase tracking-wider mb-1">Biaya Plastik (Rp)</label>
+                    <input type="number" id="set-price-plastic" value="1000" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-700 outline-none min-h-[40px]">
+                </div>
+
+                <div class="sm:col-span-2">
+                    <label class="block text-[9px] font-bold text-slate-400 uppercase tracking-wider mb-1">Tautan Default E-Nota</label>
+                    <input type="text" id="set-default-link" value="http://edobi.id/w/enota/abhai/260530175PQ3BAVQRZ" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-700 outline-none min-h-[40px]">
+                </div>
+            </div>
+
+            <!-- PANEL: MANAJER TARIF ITEM LAYANAN PINTAR -->
+            <div class="bg-sky-50/50 p-3 sm:p-4 rounded-2xl border border-sky-100 flex flex-col gap-3 mt-3">
+                <h4 class="text-[10px] font-bold text-sky-850 flex items-center gap-1.5 uppercase tracking-wider">
+                    <i class="fa-solid fa-tags"></i> Manajer Tarif Item Layanan
+                </h4>
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                    <div>
+                        <label class="block text-[8px] font-bold text-slate-400 uppercase mb-0.5">Kategori Layanan</label>
+                        <select id="set-item-category" onchange="populateSettingsItemDropdown()" class="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl text-xs font-semibold text-slate-700 outline-none min-h-[40px]">
+                            <option value="KILOAN">Kiloan (Kg)</option>
+                            <option value="BIJIAN">Bijian (Pcs)</option>
+                            <option value="METERAN">Meteran (Meter)</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-[8px] font-bold text-slate-400 uppercase mb-0.5">Nama Item</label>
+                        <select id="set-item-name" onchange="showSettingsItemPrice()" class="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl text-xs font-semibold text-slate-700 outline-none min-h-[40px]">
+                            <!-- Diisi dinamis -->
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-[8px] font-bold text-slate-400 uppercase mb-0.5">Tarif Baru (Rp)</label>
+                        <input type="number" id="set-item-price" class="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl text-xs font-semibold text-slate-700 outline-none min-h-[40px]">
+                    </div>
+                </div>
+                <div class="flex justify-end">
+                    <button onclick="saveItemPriceConfiguration()" class="bg-sky-600 hover:bg-sky-700 text-white font-extrabold py-2 px-3.5 rounded-xl text-xs transition-all flex items-center gap-1.5 min-h-[36px]">
+                        <i class="fa-solid fa-circle-check"></i> Simpan Tarif
+                    </button>
+                </div>
+            </div>
+
+            <div class="flex flex-col sm:flex-row gap-2 mt-4 border-t border-slate-100 pt-4">
+                <button onclick="saveConfigurationSettings()" class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold py-3 px-4 rounded-xl text-xs uppercase tracking-wider flex items-center justify-center gap-1.5 transition-all min-h-[44px]">
+                    <i class="fa-solid fa-circle-check text-sm"></i> Simpan Konfigurasi
+                </button>
+                <button onclick="requestResetSettingsToDefault()" class="bg-slate-100 hover:bg-slate-200 text-slate-500 px-4 py-3 rounded-xl text-xs font-bold transition-all min-h-[40px]">
+                    Reset
+                </button>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- ============================================== -->
+    <!-- KARTU STRUK NOTA GRAFIS PREMIUM (TERSEMBUNYI UNTUK RENDERING IMAGES) -->
+    <!-- ============================================== -->
+    <div class="fixed top-[5000px] left-[5000px] z-[-9999] pointer-events-none">
+        <div id="visual-receipt-template" class="w-[380px] bg-white p-5 rounded-[24px] shadow-2xl border border-slate-150 flex flex-col items-center relative overflow-hidden" style="font-family: 'Inter', sans-serif;">
+            
+            <div class="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-sky-400 to-blue-500"></div>
+
+            <!-- Logo Ello Djoyo Laundry Vektor SVG Tajam (Struk Cetak) -->
+            <div class="w-24 h-24 mt-2 mb-2 flex items-center justify-center">
+                <svg class="w-full h-full" viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="250" cy="250" r="240" fill="#2d5fc2" />
+                    <circle cx="250" cy="250" r="226" fill="#FFFFFF" />
+                    <circle cx="250" cy="250" r="218" fill="#2d5fc2" />
+                    <path d="M 40 220 A 210 210 0 0 1 460 220 Z" fill="#FFC72C" />
+                    <rect x="200" y="125" width="100" height="145" rx="14" fill="#FFFFFF" stroke="#2d5fc2" stroke-width="8" />
+                    <line x1="200" y1="165" x2="300" y2="165" stroke="#2d5fc2" stroke-width="5" />
+                    <circle cx="215" cy="145" r="5" fill="#2d5fc2" />
+                    <circle cx="228" cy="145" r="5" fill="#2d5fc2" />
+                    <rect x="245" y="137" width="45" height="16" rx="4" fill="#FFFFFF" stroke="#2d5fc2" stroke-width="4" />
+                    <circle cx="250" cy="215" r="38" fill="#FFFFFF" stroke="#FFC72C" stroke-width="6" />
+                    <circle cx="250" cy="215" r="30" fill="#E2F1FF" stroke="#2d5fc2" stroke-width="5" />
+                    <path d="M 223 218 Q 235 204 250 218 T 277 218 A 27 27 0 0 1 223 218 Z" fill="#2d5fc2" />
+                    <rect x="215" y="105" width="70" height="12" rx="6" fill="#5FBDFF" stroke="#2d5fc2" stroke-width="4" />
+                    <rect x="222" y="93" width="56" height="12" rx="6" fill="#96EFFF" stroke="#2d5fc2" stroke-width="4" />
+                    <path d="M 125 215 L 133 245 A 5 5 0 0 0 138 249 L 167 249 A 5 5 0 0 0 172 245 L 180 215 Z" fill="#FFFFFF" stroke="#2d5fc2" stroke-width="5" />
+                    <circle cx="140" cy="208" r="10" fill="#FFC72C" stroke="#2d5fc2" stroke-width="4" />
+                    <circle cx="152" cy="203" r="11" fill="#5FBDFF" stroke="#2d5fc2" stroke-width="4" />
+                    <circle cx="165" cy="209" r="9" fill="#96EFFF" stroke="#2d5fc2" stroke-width="4" />
+                    <path d="M 326 200 L 326 182 Q 326 174 334 174 L 337 174 L 337 165 L 343 165 L 343 174 Q 352 174 352 186 L 352 243 A 5 5 0 0 1 347 248 L 331 248 A 5 5 0 0 1 326 243 Z" fill="#5FBDFF" stroke="#2d5fc2" stroke-width="5" />
+                    <rect x="333" y="195" width="12" height="28" rx="2" fill="#FFFFFF" stroke="#2d5fc2" stroke-width="3" />
+                    <path d="M 160 140 Q 160 148 168 148 Q 160 148 160 156 Q 160 148 152 148 Q 160 148 160 140 Z" fill="#FFFFFF" />
+                    <path d="M 335 130 Q 335 138 343 138 Q 335 138 335 146 Q 335 138 327 138 Q 335 138 335 130 Z" fill="#FFFFFF" />
+                    <path id="top-arch-nav-struk" d="M 90 225 A 168 168 0 0 1 410 225" fill="none" />
+                    <text fill="#2d5fc2" font-size="25" font-family="Arial, sans-serif" font-weight="900" letter-spacing="4">
+                        <textPath href="#top-arch-nav-struk" startOffset="50%" text-anchor="middle">BERSIH • RAPI • WANGI</textPath>
+                    </text>
+                    <text x="145" y="285" fill="#FFFFFF" font-size="20" font-family="Arial, sans-serif" font-weight="bold" text-anchor="middle">ESTD</text>
+                    <text x="355" y="285" fill="#FFFFFF" font-size="20" font-family="Arial, sans-serif" font-weight="bold" text-anchor="middle">2017</text>
+                    <text x="250" y="360" fill="#FFC72C" font-size="52" font-family="Impact, Arial, sans-serif" font-weight="900" text-anchor="middle" letter-spacing="1">ELLO DJOYO</text>
+                    <text x="250" y="395" fill="#FFFFFF" font-size="22" font-family="Arial, sans-serif" font-weight="bold" text-anchor="middle" letter-spacing="6">LAUNDRY</text>
+                    <text x="250" y="420" fill="#FFFFFF" font-size="13" font-family="Arial, sans-serif" font-weight="bold" text-anchor="middle" letter-spacing="1.5">SIDOREJO - KEDUNGTUBAN</text>
+                    <rect x="175" y="435" width="150" height="30" rx="15" fill="#FFC72C" />
+                    <text x="250" y="447" fill="#000000" font-size="9" font-family="Arial, sans-serif" font-weight="900" text-anchor="middle">WA: 081237037342</text>
+                    <text x="250" y="459" fill="#000000" font-size="9" font-family="Arial, sans-serif" font-weight="900" text-anchor="middle">081237037342</text>
+                </svg>
+            </div>
+
+            <!-- Detail Perusahaan/Toko -->
+            <div class="text-center">
+                <h4 id="render-laundry-name" class="font-extrabold text-xs text-slate-800 tracking-wide uppercase">ELLO DJOYO LAUNDRY</h4>
+                <p id="render-laundry-address" class="text-[7.5px] text-slate-400 mt-1 max-w-[280px] leading-relaxed mx-auto">Desa Sidorejo 04/02 -Kedungtuban-Blora -Jawa Tengah (58381) (NIB.0268010022345)</p>
+                <p id="render-laundry-phone" class="text-[8px] text-sky-600 font-extrabold mt-0.5">HP: 081237037342</p>
+            </div>
+
+            <div class="w-full border-t border-dashed border-slate-200 my-3"></div>
+
+            <!-- Detail Nomor Nota & Pelanggan -->
+            <div class="w-full text-[9px] text-slate-600 space-y-1.5 font-semibold">
+                <div class="flex justify-between">
+                    <span>No. Nota :</span>
+                    <span id="render-note-number" class="font-bold text-slate-900 tracking-wider">TRX/260530001</span>
+                </div>
+                <div class="flex justify-between">
+                    <span>Nama Pelanggan :</span>
+                    <span id="render-cust-name" class="font-extrabold text-slate-900 uppercase">Mb Jaju</span>
+                </div>
+                <div class="flex justify-between">
+                    <span>Tanggal Masuk :</span>
+                    <span id="render-note-date" class="font-bold text-slate-700">30/05/2026 - 17:54</span>
+                </div>
+                <div class="flex justify-between">
+                    <span>Alamat Pelanggan :</span>
+                    <span id="render-cust-address" class="font-bold text-slate-700">-</span>
+                </div>
+            </div>
+
+            <div class="w-full border-t border-dashed border-slate-200 my-3"></div>
+
+            <!-- Rincian Biaya (Hybrid Items List) -->
+            <div class="w-full text-[9px] text-slate-600 font-medium flex flex-col gap-2">
+                <div id="render-items-container" class="space-y-2">
+                    <!-- Dinonaktifkan: Dirender dinamis oleh JS -->
+                </div>
+
+                <div class="border-t border-slate-100 my-1"></div>
+
+                <div class="flex justify-between">
+                    <span>Biaya Kemasan Plastik :</span>
+                    <span id="render-plastic-total" class="font-bold text-slate-900">Rp 1.000</span>
+                </div>
+
+                <div class="flex justify-between text-[8px] text-slate-400 font-semibold italic">
+                    <span>Aroma Parfum Pilihan :</span>
+                    <span id="render-parfum-name" class="font-bold text-sky-600">Sakura</span>
+                </div>
+
+                <div class="flex justify-between text-[8px] text-slate-400 font-semibold italic">
+                    <span>Status Pembayaran :</span>
+                    <span id="render-status" class="font-extrabold bg-rose-50 text-rose-600 border border-rose-100 px-1.5 py-0.5 rounded-full uppercase scale-90">BELUM BAYAR</span>
+                </div>
+
+                <div class="flex flex-col gap-0.5 text-[8px] text-slate-400 leading-normal bg-slate-50 p-2 rounded-lg border border-slate-100">
+                    <span class="font-bold text-slate-500">Catatan/Keterangan :</span>
+                    <span id="render-keterangan" class="font-medium text-slate-600 font-semibold">"-"</span>
+                </div>
+            </div>
+
+            <div class="w-full border-t border-dashed border-slate-200 my-3"></div>
+
+            <!-- Kalkulasi Biaya Keseluruhan -->
+            <div class="w-full text-[9px] text-slate-600 font-bold space-y-1">
+                <div class="flex justify-between">
+                    <span>Subtotal :</span>
+                    <span id="render-subtotal" class="text-slate-900">Rp 71.000</span>
+                </div>
+                <div class="flex justify-between text-rose-600">
+                    <span>Diskon :</span>
+                    <span id="render-diskon">- Rp 0</span>
+                </div>
+                <div class="flex justify-between text-base font-black text-slate-900 border-t border-dashed border-slate-100 pt-2">
+                    <span class="text-xs uppercase tracking-wide">Total Bayar :</span>
+                    <span id="render-grand-total" class="text-sky-600 font-black">Rp 71.000</span>
+                </div>
+            </div>
+
+            <div class="w-full border-t border-dashed border-slate-200 my-3"></div>
+
+            <!-- Keterangan Pembayaran Non-Tunai -->
+            <div class="w-full text-center text-[7px] text-slate-400 leading-normal max-w-[280px]">
+                <p class="font-semibold text-slate-500 mb-0.5">Metode Pembayaran Non-Tunai / Transfer :</p>
+                <p id="render-bank-details" class="font-bold text-slate-700 bg-sky-50/50 p-1 rounded border border-sky-50">No Rekening BRI 021501054687508 (a/n Siti Latifah)</p>
+                <p class="mt-1.5 italic text-[6.5px]">Terima kasih telah mempercayakan pakaian Anda di Ello Djoyo Laundry!</p>
+                <p id="render-note-link" class="text-sky-600 font-extrabold mt-1">http://edobi.id/w/enota/abhai/260530175PQ3BAVQRZ</p>
+            </div>
+
+            <!-- Barcode Hiasan bawah Nota -->
+            <div class="flex flex-col items-center mt-3 gap-0.5">
+                <div class="h-6 w-36 bg-slate-200 rounded flex items-center justify-around overflow-hidden px-1 py-0.5 opacity-60">
+                    <div class="h-full w-[2px] bg-slate-800"></div><div class="h-full w-[4px] bg-slate-800"></div><div class="h-full w-[1px] bg-slate-800"></div><div class="h-full w-[3px] bg-slate-800"></div><div class="h-full w-[1px] bg-slate-800"></div><div class="h-full w-[4px] bg-slate-800"></div><div class="h-full w-[2px] bg-slate-800"></div><div class="h-full w-[1px] bg-slate-800"></div><div class="h-full w-[3px] bg-slate-800"></div><div class="h-full w-[1px] bg-slate-800"></div><div class="h-full w-[5px] bg-slate-800"></div><div class="h-full w-[2px] bg-slate-800"></div><div class="h-full w-[1px] bg-slate-800"></div><div class="h-full w-[3px] bg-slate-800"></div><div class="h-full w-[2px] bg-slate-800"></div>
+                </div>
+                <span class="text-[6px] font-bold text-slate-400 tracking-[0.2em] uppercase">E-NOTA SYSTEM</span>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- ============================================== -->
+    <!-- POPUP MODAL PRATINJAU NOTA VISUAL -->
+    <!-- ============================================== -->
+    <div id="receipt-preview-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 opacity-0 pointer-events-none transition-all duration-300">
+        <div class="bg-white rounded-[32px] p-5 max-w-sm w-full shadow-2xl flex flex-col items-center border border-slate-100 max-h-[90vh] overflow-hidden transform scale-95 transition-all duration-300">
+            
+            <div class="flex justify-between items-center w-full border-b border-slate-100 pb-3 mb-3 shrink-0">
+                <h3 class="text-sm font-black text-slate-800 flex items-center gap-1.5"><i class="fa-solid fa-receipt text-sky-600"></i> Struk Nota Visual</h3>
+                <button onclick="closeReceiptPreviewModal()" class="text-slate-400 hover:text-slate-600 text-lg transition-colors p-1"><i class="fa-solid fa-circle-xmark text-xl"></i></button>
+            </div>
+
+            <!-- Wadah Gulir Gambar Struk -->
+            <div class="w-full overflow-y-auto no-scrollbar flex flex-col items-center flex-grow p-1">
+                <div id="canvas-image-output-container" class="rounded-2xl overflow-hidden shadow-md border border-slate-150 shrink-0 bg-slate-50 min-h-[350px] w-full flex items-center justify-center">
+                    <div class="text-center p-4">
+                        <i class="fa-solid fa-spinner animate-spin text-sky-600 text-xl"></i>
+                        <p class="text-[10px] text-slate-400 mt-2">Sedang merender gambar struk premium...</p>
+                    </div>
+                </div>
+
+                <!-- Petunjuk Alur Pengiriman Gambar Berkas di Android/Mobile -->
+                <div class="bg-sky-50 border border-sky-100 p-3 rounded-2xl flex gap-2 w-full mt-4">
+                    <span class="text-sky-600 text-sm mt-0.5"><i class="fa-solid fa-circle-info text-base"></i></span>
+                    <div class="text-[10px] text-slate-655 leading-normal">
+                        <p class="font-bold text-slate-800">Petunjuk Kirim WhatsApp:</p>
+                        <p class="mt-1">1. Sistem otomatis **Menyalin** gambar nota ke papan klip ponsel Anda.</p>
+                        <p class="mt-1">2. Klik tombol **"Kirim Gambar Nota"** untuk membuka WA pelanggan.</p>
+                        <p class="mt-1">3. Tekan lama pada kolom ketik WhatsApp, lalu klik **"Tempel / Paste"** dan kirim.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tombol Pengiriman / Unduh -->
+            <div class="grid grid-cols-2 gap-2 w-full mt-4 border-t border-slate-100 pt-3 shrink-0">
+                <button id="btn-download-image" class="py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 font-extrabold rounded-xl text-xs flex items-center justify-center gap-1.5 transition-all min-h-[44px]">
+                    <i class="fa-solid fa-download"></i> Simpan
+                </button>
+                <button id="btn-direct-wa" class="py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold rounded-xl text-xs flex items-center justify-center gap-1.5 transition-all min-h-[44px]">
+                    <i class="fa-brands fa-whatsapp text-sm"></i> Kirim Gambar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================== -->
+    <!-- CUSTOM MODAL CONFIRMATION (PENGGANTI confirm() BROWSER) -->
+    <!-- ============================================== -->
+    <div id="custom-confirm-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-55 flex items-center justify-center p-4 opacity-0 pointer-events-none transition-all duration-300">
+        <div class="bg-white rounded-3xl p-5 max-w-sm w-full shadow-2xl flex flex-col gap-4 transform scale-95 transition-all duration-300">
+            <div class="flex items-center gap-3 text-amber-500 border-b border-slate-100 pb-2.5">
+                <i class="fa-solid fa-circle-question text-2xl"></i>
+                <h3 class="font-black text-slate-800 text-sm">Konfirmasi Tindakan</h3>
+            </div>
+            <p id="confirm-modal-message" class="text-xs text-slate-655 leading-relaxed">Apakah Anda yakin ingin melanjutkan tindakan ini?</p>
+            <div class="flex gap-2 justify-end mt-2">
+                <button id="btn-confirm-cancel" class="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold rounded-xl text-xs transition-all min-h-[40px]">Batal</button>
+                <button id="btn-confirm-proceed" class="px-4 py-2.5 bg-rose-600 hover:bg-rose-700 text-white font-bold rounded-xl text-xs transition-all min-h-[40px]">Ya, Lanjutkan</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- TOAST NOTIFICATION CONTAINER -->
+    <div id="toast-container" class="fixed top-4 right-4 left-4 sm:left-auto z-[9999] pointer-events-none flex flex-col gap-2 max-w-sm">
+        <!-- Toast disisipkan dari JS -->
+    </div>
+
+    <!-- ============================================== -->
+    <!-- LOGIKA & OPERASIONAL JAVASCRIPT -->
+    <!-- ============================================== -->
+    <script>
+        
+        // DOM Elements
+        const notePelanggan = document.getElementById('note-pelanggan');
+        const notePelangganSelect = document.getElementById('note-pelanggan-select');
+        const noteHp = document.getElementById('note-hp');
+        const noteAlamat = document.getElementById('note-alamat');
+        const noteNomor = document.getElementById('note-nomor');
+        const noteTanggal = document.getElementById('note-tanggal');
+        
+        // Item Input Elements
+        const itemCategorySelect = document.getElementById('item-category-select');
+        const itemNameSelect = document.getElementById('item-name-select');
+        const itemQtyInput = document.getElementById('item-qty-input');
+        const itemPriceInput = document.getElementById('item-price-input');
+        const labelItemQty = document.getElementById('label-item-qty');
+
+        // Other Note Level Elements
+        const notePlastik = document.getElementById('note-plastik');
+        const noteDiskon = document.getElementById('note-diskon');
+        const noteParfum = document.getElementById('note-parfum');
+        const noteStatus = document.getElementById('note-status');
+        const noteKeterangan = document.getElementById('note-keterangan');
+        const btnCancelEdit = document.getElementById('btn-cancel-edit');
+        const formNoteTitle = document.getElementById('form-note-title');
+
+        // Customer tab fields
+        const custNameInput = document.getElementById('cust-name-input');
+        const custPhoneInput = document.getElementById('cust-phone-input');
+        const custAddressInput = document.getElementById('cust-address-input');
+        const customerIdInput = document.getElementById('customer-id-input');
+        const btnCancelCustEdit = document.getElementById('btn-cancel-cust-edit');
+        const customerFormTitle = document.getElementById('customer-form-title');
+
+        // MODAL
+        const receiptPreviewModal = document.getElementById('receipt-preview-modal');
+        const customConfirmModal = document.getElementById('custom-confirm-modal');
+        const confirmMsg = document.getElementById('confirm-modal-message');
+        const btnConfirmProceed = document.getElementById('btn-confirm-proceed');
+        const btnConfirmCancel = document.getElementById('btn-confirm-cancel');
+
+        // ==============================================
+        // CORE STATE DATABASE (DENGAN MANAJER TARIF ITEM)
+        // ==============================================
+        let appConfig = {
+            laundryName: "Ello Djoyo Laundry",
+            phone: "081237037342",
+            address: "Desa Sidorejo 04/02 -Kedungtuban-Blora -Jawa Tengah (58381) (NIB.0268010022345)",
+            bankDetails: "No Rekening BRI 021501054687508 (a/n Siti Latifah)",
+            pricePlastic: 1000,
+            defaultLink: "http://edobi.id/w/enota/abhai/260530175PQ3BAVQRZ",
+            itemPricing: {
+                "KILOAN": {
+                    "Reguler": { price: 4000, icon: "fa-shirt" },
+                    "Cuci Setrika": { price: 5000, icon: "fa-tshirt" },
+                    "Cuci Spesial": { price: 7000, icon: "fa-soap" },
+                    "CS Spesial": { price: 8000, icon: "fa-star" }
+                },
+                "BIJIAN": {
+                    "Selimut": { price: 15000, icon: "fa-bed" },
+                    "Daleman": { price: 5000, icon: "fa-socks" },
+                    "Tas": { price: 20000, icon: "fa-bag-shopping" },
+                    "Topi": { price: 8000, icon: "fa-hat-cowboy" },
+                    "Sprei": { price: 12000, icon: "fa-scroll" },
+                    "Sepatu Dewasa": { price: 25000, icon: "fa-shoe-prints" },
+                    "Sarung tangan": { price: 5000, icon: "fa-hands" },
+                    "Korden": { price: 15000, icon: "fa-border-all" },
+                    "Kasur Lantai": { price: 35000, icon: "fa-layer-group" },
+                    "Kaos Kaki": { price: 3000, icon: "fa-socks" }
+                },
+                "METERAN": {
+                    "Karpet Bulu": { price: 15000, icon: "fa-square" },
+                    "Ambal": { price: 12000, icon: "fa-rug" }
+                }
+            }
+        };
+
+        // Cart items for current note
+        let currentNoteItems = []; 
+        let currentEditingId = null;
+        let generatedReceiptBlob = null;
+        let currentBookkeepingPeriod = 'mingguan'; 
+        let confirmSuccessCallback = null;
+
+        // Custom Sleek Toast Notification Helper
+        function showToast(message, type = 'info') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            
+            let colorClasses = "bg-slate-800 text-white";
+            let icon = '<i class="fa-solid fa-circle-info"></i>';
+            if (type === 'success') {
+                colorClasses = "bg-emerald-600 text-white shadow-emerald-950/10";
+                icon = '<i class="fa-solid fa-circle-check"></i>';
+            } else if (type === 'error') {
+                colorClasses = "bg-rose-600 text-white shadow-rose-950/10";
+                icon = '<i class="fa-solid fa-circle-exclamation"></i>';
+            } else if (type === 'warning') {
+                colorClasses = "bg-amber-500 text-slate-950 shadow-amber-950/10";
+                icon = '<i class="fa-solid fa-triangle-exclamation"></i>';
+            }
+
+            toast.className = `${colorClasses} pointer-events-auto flex items-center gap-2.5 py-3 px-4 rounded-xl shadow-md text-xs font-bold transition-all duration-300 transform -translate-y-2 opacity-0 shrink-0 w-full`;
+            toast.innerHTML = `${icon} <span class="flex-1">${message}</span>`;
+            
+            container.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.classList.remove('-translate-y-2', 'opacity-0');
+            }, 10);
+
+            setTimeout(() => {
+                toast.classList.add('-translate-y-2', 'opacity-0');
+                setTimeout(() => {
+                    toast.remove();
+                }, 300);
+            }, 3500);
+        }
+
+        // Standard formatting helper Rupiah
+        function formatRupiah(number) {
+            return new Intl.NumberFormat('id-ID', {
+                style: 'decimal',
+                minimumFractionDigits: 0
+            }).format(number);
+        }
+
+        // Standard date parsing (DD/MM/YYYY - HH:mm) -> Date Object
+        function parseCustomDateString(dateStr) {
+            try {
+                const parts = dateStr.split(" - ");
+                const dmy = parts[0].split("/");
+                const hm = parts[1].split(":");
+                return new Date(dmy[2], dmy[1] - 1, dmy[0], hm[0], hm[1]);
+            } catch (e) {
+                return new Date();
+            }
+        }
+
+        // Mobile View toggler for Simulator vs Form
+        function toggleMobileGeneratorView(view) {
+            const formBtn = document.getElementById('toggle-mobile-form-btn');
+            const simBtn = document.getElementById('toggle-mobile-sim-btn');
+            const formPanel = document.getElementById('mobile-form-panel');
+            const simPanel = document.getElementById('mobile-sim-panel');
+
+            if (view === 'form') {
+                formBtn.className = "flex-grow py-2.5 text-xs font-bold rounded-lg text-center transition-all bg-white text-sky-700 shadow-sm";
+                simBtn.className = "flex-grow py-2.5 text-xs font-bold rounded-lg text-center transition-all text-slate-655";
+                formPanel.classList.remove('hidden');
+                simPanel.classList.add('hidden', 'lg:flex');
+            } else {
+                simBtn.className = "flex-grow py-2.5 text-xs font-bold rounded-lg text-center transition-all bg-white text-sky-700 shadow-sm";
+                formBtn.className = "flex-grow py-2.5 text-xs font-bold rounded-lg text-center transition-all text-slate-655";
+                simPanel.classList.remove('hidden', 'lg:flex');
+                simPanel.classList.add('flex');
+                formPanel.classList.add('hidden');
+            }
+        }
+
+        // ==============================================
+        // SINKRONISASI DATABASE LOKAL (CRUD)
+        // ==============================================
+        function getCustomers() {
+            let list = localStorage.getItem('ellodjoyo_customers');
+            if (!list) {
+                // DATA DEFAULT AWAL BESERTA PENGGABUNGAN DATA CSV BARU
+                const defaultCustomers = [
+                    { id: 1, name: "Mb Sugiarti", phone: "081237037101", address: "Sidorejo RT 01" },
+                    { id: 2, name: "Matori Blower", phone: "081237037102", address: "Sidorejo, Kedungtuban" },
+                    { id: 3, name: "Angello EL Salman", phone: "081237037103", address: "Sidorejo, Kedungtuban" },
+                    { id: 4, name: "B Faiz Tika EyeLash Studio", phone: "081237037104", address: "Blora Kota" },
+                    { id: 5, name: "B BalqisFitri Saelan", phone: "081237037105", address: "Sidorejo" },
+                    { id: 6, name: "Duwi Yulianti", phone: "081237037106", address: "Desa Sidorejo" },
+                    { id: 7, name: "Mb Su Cewek", phone: "081237037107", address: "Kedungtuban" },
+                    { id: 8, name: "kipli UA", phone: "081237037108", address: "Sidorejo" },
+                    { id: 9, name: "Pesek New", phone: "081237037109", address: "Sidorejo" },
+                    { id: 10, name: "Mb Siti Ronal", phone: "081237037110", address: "Kedungtuban, Blora" },
+                    { id: 11, name: "Cak Man", phone: "081237037111", address: "Sidorejo" },
+                    { id: 12, name: "Papa", phone: "081237037112", address: "Rumah Utama, Sidorejo" },
+                    { id: 13, name: "Raditya 6a", phone: "081237037113", address: "Sidorejo" },
+                    { id: 14, name: "Alisya 6a", phone: "081237037114", address: "Sidorejo" },
+                    { id: 15, name: "Mayla", phone: "081237037115", address: "Kedungtuban" },
+                    { id: 16, name: "Rek BRI SRIWIN", phone: "081237037116", address: "Sidorejo" },
+                    { id: 17, name: "Ali", phone: "081237037117", address: "Kedungtuban" },
+                    { id: 18, name: "Raya", phone: "081237037118", address: "Sidorejo" },
+                    { id: 19, name: "Gus MAD", phone: "081237037119", address: "Pondok Sidorejo" },
+                    { id: 20, name: "Ansor 2", phone: "081237037120", address: "Sidorejo" },
+                    { id: 21, name: "P muntolibb Unugiri", phone: "081237037121", address: "Sidorejo, Kedungtuban" },
+                    { id: 22, name: "Mb Jaju", phone: "081237037342", address: "Sidorejo RT 04 / RW 02 Kedungtuban" },
+                    { id: 23, name: "Pak Budi", phone: "088229647451", address: "Pandean, Kedungtuban" },
+                    { id: 24, name: "Bu Siti Latifah", phone: "08123456789", address: "Desa Sidorejo" },
+                    // --- DATA HASIL PARSING DARI FILE CSV ---
+                    { id: 25, name: "Isi Pulsa", phone: "081200000001", address: "-" },
+                    { id: 26, name: "Data Transaksi", phone: "081200000002", address: "-" },
+                    { id: 27, name: "TELKOMSEL", phone: "081200000003", address: "-" },
+                    { id: 28, name: "Ceknomor", phone: "081200000004", address: "-" },
+                    { id: 29, name: "Goder", phone: "081200000005", address: "-" },
+                    { id: 30, name: "Radit6a", phone: "081200000006", address: "-" },
+                    { id: 31, name: "K Kes", phone: "081200000007", address: "-" },
+                    { id: 32, name: "Pake Indosat", phone: "081200000008", address: "-" }
+                ];
+                localStorage.setItem('ellodjoyo_customers', JSON.stringify(defaultCustomers));
+                return defaultCustomers;
+            }
+            return JSON.parse(list);
+        }
+
+        // ==============================================
+        // PARSER DAN IMPORTIR FILE CSV KONTAK BARU
+        // ==============================================
+        function handleCSVImport(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const text = e.target.result;
+                    const rows = parseCSV(text);
+                    if (rows.length <= 1) {
+                        showToast("File CSV kosong atau format tidak valid!", "error");
+                        return;
+                    }
+                    
+                    const headers = rows[0].map(h => h.trim().toLowerCase());
+                    const dispNameIdx = headers.indexOf("display name");
+                    const firstNameIdx = headers.indexOf("first name");
+                    const lastNameIdx = headers.indexOf("last name");
+                    const mobileIdx = headers.indexOf("mobile phone");
+                    const homePhoneIdx = headers.indexOf("home phone");
+                    const businessPhoneIdx = headers.indexOf("business phone");
+                    const addressIdx = headers.indexOf("home street");
+
+                    let importedCount = 0;
+                    let existingList = getCustomers();
+
+                    for (let i = 1; i < rows.length; i++) {
+                        const row = rows[i];
+                        if (!row || row.length === 0 || row.join("").trim() === "") continue;
+                        
+                        let name = "";
+                        if (dispNameIdx !== -1 && row[dispNameIdx]) {
+                            name = row[dispNameIdx].trim();
+                        } else {
+                            const first = firstNameIdx !== -1 ? (row[firstNameIdx] || "").trim() : "";
+                            const last = lastNameIdx !== -1 ? (row[lastNameIdx] || "").trim() : "";
+                            name = `${first} ${last}`.trim();
+                        }
+
+                        if (!name) continue;
+
+                        let phone = "";
+                        if (mobileIdx !== -1 && row[mobileIdx]) phone = row[mobileIdx].trim();
+                        else if (homePhoneIdx !== -1 && row[homePhoneIdx]) phone = row[homePhoneIdx].trim();
+                        else if (businessPhoneIdx !== -1 && row[businessPhoneIdx]) phone = row[businessPhoneIdx].trim();
+
+                        // Sanitasi nomor HP
+                        phone = phone.replace(/\D/g, '');
+                        if (phone.startsWith('62')) {
+                            phone = '0' + phone.slice(2);
+                        } else if (phone && !phone.startsWith('0')) {
+                            phone = '0' + phone;
+                        }
+
+                        // Fallback jika tidak ada nomor HP
+                        if (!phone) {
+                            phone = "0812" + Math.floor(10000000 + Math.random() * 90000000);
+                        }
+
+                        let address = "Sidorejo, Kedungtuban";
+                        if (addressIdx !== -1 && row[addressIdx]) {
+                            address = row[addressIdx].trim();
+                        }
+
+                        // Cek duplikasi nama
+                        const exists = existingList.some(c => c.name.toLowerCase() === name.toLowerCase());
+                        if (!exists) {
+                            existingList.unshift({
+                                id: Date.now() + i,
+                                name: name,
+                                phone: phone,
+                                address: address
+                            });
+                            importedCount++;
+                        }
+                    }
+
+                    localStorage.setItem('ellodjoyo_customers', JSON.stringify(existingList));
+                    showToast(`Berhasil mengimpor ${importedCount} pelanggan baru dari berkas CSV!`, "success");
+                    
+                    renderCustomersList();
+                    populateCustomerDropdown();
+                    
+                    event.target.value = "";
+                } catch (err) {
+                    console.error(err);
+                    showToast("Gagal memproses file CSV.", "error");
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        // Helper Parser CSV yang aman terhadap tanda kutip dua ganda
+        function parseCSV(text) {
+            let lines = [];
+            let row = [""];
+            let inQuotes = false;
+            for (let i = 0; i < text.length; i++) {
+                let c = text[i];
+                let next = text[i+1];
+                if (c === '"') {
+                    if (inQuotes && next === '"') { row[row.length - 1] += '"'; i++; } 
+                    else { inQuotes = !inQuotes; }
+                } else if (c === ',') {
+                    if (inQuotes) { row[row.length - 1] += ','; }
+                    else { row.push(""); }
+                } else if (c === '\r' || c === '\n') {
+                    if (inQuotes) { row[row.length - 1] += c; }
+                    else {
+                        if (c === '\r' && next === '\n') { i++; }
+                        lines.push(row);
+                        row = [""];
+                    }
+                } else {
+                    row[row.length - 1] += c;
+                }
+            }
+            if (row.length > 1 || row[0] !== "") {
+                lines.push(row);
+            }
+            return lines;
+        }
+
+        function getHistory() {
+            let list = localStorage.getItem('ellodjoyo_history');
+            return list ? JSON.parse(list) : [];
+        }
+
+        // ==============================================
+        // NAVIGASI TAB SYSTEM KASIR (Desktop & Mobile Sync)
+        // ==============================================
+        function switchAdminTab(tabName) {
+            const tabs = ['dashboard', 'generator', 'customers', 'bookkeeping', 'history', 'settings'];
+            
+            // Sync bottom bar navigation active style
+            tabs.forEach(t => {
+                const btnDesktop = document.getElementById(`tab-admin-${t}`);
+                const btnMobile = document.getElementById(`bottom-tab-${t}`);
+                const content = document.getElementById(`tab-content-${t}`);
+
+                if (t === tabName) {
+                    if (btnDesktop) btnDesktop.className = "shrink-0 px-4 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 bg-sky-600 text-white shadow-sm";
+                    if (btnMobile) btnMobile.className = "flex flex-col items-center gap-0.5 text-sky-600";
+                    if (content) content.classList.remove('hidden');
+                    if (btnDesktop) btnDesktop.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+                } else {
+                    if (btnDesktop) btnDesktop.className = "shrink-0 px-4 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 text-slate-655 hover:bg-slate-50";
+                    if (btnMobile) btnMobile.className = "flex flex-col items-center gap-0.5 text-slate-400 hover:text-slate-650";
+                    if (content) content.classList.add('hidden');
+                }
+            });
+
+            // Reset Mobile Toggle State
+            toggleMobileGeneratorView('form');
+
+            if (tabName === 'dashboard') {
+                renderAllAdminDashboardData();
+            } else if (tabName === 'generator') {
+                populateCustomerDropdown();
+                setupNewNoteDetails();
+                renderNoteItemsTable();
+                calculateAndRenderLiveSimulator();
+            } else if (tabName === 'customers') {
+                renderCustomersList();
+            } else if (tabName === 'bookkeeping') {
+                renderBookkeepingReport();
+            } else if (tabName === 'history') {
+                renderHistoryList();
+            } else if (tabName === 'settings') {
+                loadConfigurations();
+            }
+        }
+
+        // ==============================================
+        // MENU DATA PELANGGAN
+        // ==============================================
+        function renderCustomersList() {
+            const list = getCustomers();
+            const container = document.getElementById('customers-list-container');
+            const searchVal = document.getElementById('cust-search').value.toLowerCase();
+            const badge = document.getElementById('cust-count-badge');
+
+            container.innerHTML = "";
+            let htmlContent = "";
+
+            let filtered = list;
+            if (searchVal) {
+                filtered = list.filter(c => c.name.toLowerCase().includes(searchVal) || c.phone.includes(searchVal));
+            }
+
+            badge.textContent = `${filtered.length} Orang`;
+
+            if (filtered.length === 0) {
+                container.innerHTML = `<div class="text-center py-8 text-slate-400 text-xs italic"><i class="fa-solid fa-users-slash text-slate-300 text-xl block mb-1"></i> Pelanggan tidak ditemukan.</div>`;
+                return;
+            }
+
+            filtered.forEach(c => {
+                htmlContent += `
+                    <div class="bg-slate-50 p-3 rounded-2xl border border-slate-200 flex justify-between items-center gap-3">
+                        <div class="flex-grow min-w-0">
+                            <h4 class="font-extrabold text-slate-800 text-xs uppercase truncate">${c.name}</h4>
+                            <p class="text-[10px] text-emerald-600 font-semibold mt-0.5"><i class="fa-brands fa-whatsapp"></i> ${c.phone}</p>
+                            <p class="text-[9px] text-slate-400 mt-0.5 truncate"><i class="fa-solid fa-location-dot"></i> ${c.address || '-'}</p>
+                        </div>
+                        <div class="flex gap-1 shrink-0">
+                            <button onclick="startOrderForCustomer(${c.id})" class="w-9 h-9 bg-sky-50 text-sky-700 hover:bg-sky-100 rounded-xl transition-all flex items-center justify-center shadow-xs" title="Buat Nota Baru"><i class="fa-solid fa-file-invoice text-sm"></i></button>
+                            <button onclick="editCustomer(${c.id})" class="w-9 h-9 bg-slate-100 text-slate-655 hover:bg-slate-200 rounded-xl transition-all flex items-center justify-center" title="Edit"><i class="fa-solid fa-user-pen text-sm"></i></button>
+                            <button onclick="requestDeleteCustomer(${c.id})" class="w-9 h-9 bg-rose-50 text-rose-600 hover:bg-rose-100 rounded-xl transition-all flex items-center justify-center" title="Hapus"><i class="fa-solid fa-trash-can text-sm"></i></button>
+                        </div>
+                    </div>
+                `;
+            });
+
+            container.innerHTML = htmlContent;
+        }
+
+        function saveCustomerToDatabase() {
+            const name = custNameInput.value.trim();
+            const phone = custPhoneInput.value.trim();
+            const address = custAddressInput.value.trim();
+            const idVal = customerIdInput.value;
+
+            if (!name || !phone) {
+                showToast("Nama dan No. HP wajib diisi!", "warning");
+                return;
+            }
+
+            let list = getCustomers();
+
+            if (idVal) {
+                const index = list.findIndex(c => c.id == idVal);
+                if (index !== -1) {
+                    list[index] = { id: parseInt(idVal), name, phone, address };
+                    showToast("Data pelanggan diperbarui!", "success");
+                }
+            } else {
+                const newCust = {
+                    id: Date.now(),
+                    name,
+                    phone,
+                    address
+                };
+                list.unshift(newCust);
+                showToast("Pelanggan baru terdaftar!", "success");
+            }
+
+            localStorage.setItem('ellodjoyo_customers', JSON.stringify(list));
+            resetCustomerForm();
+            renderCustomersList();
+        }
+
+        function editCustomer(id) {
+            const list = getCustomers();
+            const c = list.find(item => item.id === id);
+
+            if (c) {
+                custNameInput.value = c.name;
+                custPhoneInput.value = c.phone;
+                custAddressInput.value = c.address;
+                customerIdInput.value = c.id;
+
+                customerFormTitle.innerHTML = `<i class="fa-solid fa-user-pen text-amber-500"></i> Edit Pelanggan`;
+                btnCancelCustEdit.classList.remove('hidden');
+                custNameInput.focus();
+            }
+        }
+
+        // Konfirmasi Hapus Pelanggan
+        function requestDeleteCustomer(id) {
+            triggerCustomConfirm("Apakah Anda yakin ingin menghapus data pelanggan ini dari database?", () => {
+                let list = getCustomers();
+                list = list.filter(item => item.id !== id);
+                localStorage.setItem('ellodjoyo_customers', JSON.stringify(list));
+                showToast("Pelanggan telah dihapus.", "info");
+                renderCustomersList();
+            });
+        }
+
+        function resetCustomerForm() {
+            custNameInput.value = "";
+            custPhoneInput.value = "";
+            custAddressInput.value = "";
+            customerIdInput.value = "";
+
+            customerFormTitle.innerHTML = `<i class="fa-solid fa-user-plus text-sky-600"></i> Tambah Pelanggan Baru`;
+            btnCancelCustEdit.classList.add('hidden');
+        }
+
+        function startOrderForCustomer(id) {
+            const list = getCustomers();
+            const c = list.find(item => item.id === id);
+
+            if (c) {
+                switchAdminTab('generator');
+                
+                notePelanggan.value = c.name;
+                noteHp.value = c.phone;
+                noteAlamat.value = c.address;
+
+                setTimeout(() => {
+                    notePelangganSelect.value = c.id;
+                }, 100);
+
+                calculateAndRenderLiveSimulator();
+                showToast(`Membuat nota untuk: ${c.name}`, "info");
+            }
+        }
+
+        // ==============================================
+        // CORE HYBRID & CART SYSTEM LOGIC
+        // ==============================================
+        function onItemCategoryChanged() {
+            const cat = itemCategorySelect.value;
+            const selectEl = itemNameSelect;
+            selectEl.innerHTML = "";
+
+            if (cat === 'KILOAN') {
+                labelItemQty.textContent = "Jumlah (Kg)";
+                itemQtyInput.value = "1.0";
+            } else if (cat === 'BIJIAN') {
+                labelItemQty.textContent = "Jumlah (Pcs)";
+                itemQtyInput.value = "1";
+            } else if (cat === 'METERAN') {
+                labelItemQty.textContent = "Ukuran (Meter)";
+                itemQtyInput.value = "1.0";
+            }
+
+            const items = appConfig.itemPricing[cat];
+            for (const itemName in items) {
+                const opt = document.createElement('option');
+                opt.value = itemName;
+                opt.textContent = itemName;
+                selectEl.appendChild(opt);
+            }
+
+            onItemSelectionChanged();
+        }
+
+        function onItemSelectionChanged() {
+            const cat = itemCategorySelect.value;
+            const itemName = itemNameSelect.value;
+            if (!itemName) return;
+
+            const itemConfig = appConfig.itemPricing[cat][itemName];
+            if (itemConfig) {
+                itemPriceInput.value = itemConfig.price;
+            }
+        }
+
+        function addItemToCurrentNote() {
+            const cat = itemCategorySelect.value;
+            const name = itemNameSelect.value;
+            const qty = parseFloat(itemQtyInput.value) || 0.0;
+            const price = parseInt(itemPriceInput.value) || 0;
+
+            if (!name) {
+                showToast("Pilih nama item layanan!", "warning");
+                return;
+            }
+            if (qty <= 0) {
+                showToast("Kuantitas harus lebih dari 0!", "warning");
+                return;
+            }
+            if (price <= 0) {
+                showToast("Harga satuan harus lebih dari 0!", "warning");
+                return;
+            }
+
+            const itemConfig = appConfig.itemPricing[cat][name] || { icon: "fa-tag" };
+
+            currentNoteItems.push({
+                category: cat,
+                namaLayanan: name,
+                qty: qty,
+                harga: price,
+                icon: itemConfig.icon
+            });
+
+            renderNoteItemsTable();
+            calculateAndRenderLiveSimulator();
+            showToast(`"${name}" ditambahkan!`, "success");
+        }
+
+        function removeItemFromCurrentNote(index) {
+            currentNoteItems.splice(index, 1);
+            renderNoteItemsTable();
+            calculateAndRenderLiveSimulator();
+            showToast("Item dihapus dari nota.", "info");
+        }
+
+        function renderNoteItemsTable() {
+            const tbody = document.getElementById('note-items-table-body');
+            const cartMobileList = document.getElementById('cart-mobile-list');
+            
+            tbody.innerHTML = "";
+            cartMobileList.innerHTML = "";
+
+            if (currentNoteItems.length === 0) {
+                const emptyHTML = `
+                    <div class="text-center py-5 text-slate-400 italic text-[11px]">
+                        <i class="fa-solid fa-basket-shopping text-slate-300 text-lg mb-1 block"></i> Belum ada cucian dimasukkan.
+                    </div>
+                `;
+                tbody.innerHTML = `<tr><td colspan="5" class="p-4 text-center text-slate-400 italic">Belum ada item cucian dimasukkan.</td></tr>`;
+                cartMobileList.innerHTML = emptyHTML;
+                return;
+            }
+
+            currentNoteItems.forEach((item, index) => {
+                let unit = "Kg";
+                if (item.category === "BIJIAN") unit = "Pcs";
+                if (item.category === "METERAN") unit = "Meter";
+
+                const subtotal = Math.round(item.qty * item.harga);
+                const itemIcon = item.icon || "fa-tag";
+
+                // Desktop row rendering
+                const tr = document.createElement('tr');
+                tr.className = "hover:bg-slate-50 border-b border-slate-100 text-[11px] text-slate-700 font-semibold";
+                tr.innerHTML = `
+                    <td class="p-2.5 flex items-center gap-1.5 min-w-[120px]">
+                        <span class="text-[8px] bg-sky-50 text-sky-700 px-1.5 py-0.5 rounded uppercase font-bold text-center">${item.category}</span>
+                        <i class="fa-solid ${itemIcon} text-sky-500 w-4 text-center shrink-0"></i>
+                        <span class="truncate">${item.namaLayanan}</span>
+                    </td>
+                    <td class="p-2.5 whitespace-nowrap">${item.qty} ${unit}</td>
+                    <td class="p-2.5 whitespace-nowrap">Rp ${formatRupiah(item.harga)}</td>
+                    <td class="p-2.5 font-bold text-slate-900 whitespace-nowrap">Rp ${formatRupiah(subtotal)}</td>
+                    <td class="p-2.5 text-center">
+                        <button onclick="removeItemFromCurrentNote(${index})" class="text-rose-600 hover:text-rose-850 transition-all p-2 inline-flex items-center justify-center min-w-[32px] min-h-[32px]">
+                            <i class="fa-solid fa-circle-minus text-base"></i>
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+
+                // Mobile Card layout rendering (Highly responsive!)
+                const card = document.createElement('div');
+                card.className = "bg-slate-50 p-2.5 rounded-xl border border-slate-200 flex justify-between items-center gap-2";
+                card.innerHTML = `
+                    <div class="min-w-0 flex-1">
+                        <div class="flex items-center gap-1.5">
+                            <span class="text-[7px] bg-sky-50 text-sky-700 px-1 py-0.5 rounded font-bold uppercase">${item.category}</span>
+                            <h5 class="text-[11px] font-bold text-slate-800 truncate">${item.namaLayanan}</h5>
+                        </div>
+                        <p class="text-[9px] text-slate-455 mt-0.5">${item.qty} ${unit} x Rp ${formatRupiah(item.harga)}</p>
+                        <p class="text-[10px] font-extrabold text-sky-600 mt-0.5">Rp ${formatRupiah(subtotal)}</p>
+                    </div>
+                    <button onclick="removeItemFromCurrentNote(${index})" class="w-8 h-8 bg-rose-50 text-rose-600 rounded-lg flex items-center justify-center shadow-xs shrink-0">
+                        <i class="fa-solid fa-trash-can text-xs"></i>
+                    </button>
+                `;
+                cartMobileList.appendChild(card);
+            });
+        }
+
+        // ==============================================
+        // FORM GENERATOR CONFIGURATION & LOGIC
+        // ==============================================
+        function populateCustomerDropdown() {
+            const list = getCustomers();
+            notePelangganSelect.innerHTML = '<option value="">-- Pilih dari Database --</option>';
+            list.forEach(c => {
+                const opt = document.createElement('option');
+                opt.value = c.id;
+                opt.textContent = `${c.name} (${c.phone})`;
+                notePelangganSelect.appendChild(opt);
+            });
+        }
+
+        function selectCustomerToForm() {
+            const idVal = notePelangganSelect.value;
+            if (!idVal) return;
+
+            const list = getCustomers();
+            const c = list.find(item => item.id == idVal);
+            if (c) {
+                notePelanggan.value = c.name;
+                noteHp.value = c.phone;
+                noteAlamat.value = c.address || "-";
+                calculateAndRenderLiveSimulator();
+            }
+        }
+
+        function setupNewNoteDetails() {
+            if (!currentEditingId) {
+                const now = new Date();
+                const yy = String(now.getFullYear()).slice(-2);
+                const mm = String(now.getMonth() + 1).padStart(2, '0');
+                const dd = String(now.getDate()).padStart(2, '0');
+                const hh = String(now.getHours()).padStart(2, '0');
+                const min = String(now.getMinutes()).padStart(2, '0');
+                const ss = String(now.getSeconds()).padStart(2, '0');
+
+                noteNomor.value = `TRX/${yy}${mm}${dd}${hh}${min}${ss}`;
+                noteTanggal.value = `${dd}/${mm}/20${yy} - ${hh}:${min}`;
+            }
+        }
+
+        function calculateAndRenderLiveSimulator() {
+            const pelanggan = notePelanggan.value.trim();
+            const noNotaVal = noteNomor.value.trim();
+            const tanggal = noteTanggal.value.trim();
+            const plastik = parseInt(notePlastik.value) || 0;
+            const diskon = parseInt(noteDiskon.value) || 0;
+            const parfum = noteParfum.value;
+            const status = noteStatus.value;
+            const alamat = noteAlamat.value.trim() || "-";
+            const keterangan = noteKeterangan.value.trim() || "-";
+
+            let subTotalService = 0;
+            currentNoteItems.forEach(item => {
+                subTotalService += Math.round(item.qty * item.harga);
+            });
+
+            const subtotal = subTotalService + plastik;
+            const grandTotal = Math.max(0, subtotal - diskon);
+
+            // Render Ringkasan Item di WhatsApp Simulator
+            const bubbleItemsContainer = document.getElementById('bubble-items-summary');
+            bubbleItemsContainer.innerHTML = "";
+
+            if (currentNoteItems.length === 0) {
+                bubbleItemsContainer.innerHTML = `<div class="text-slate-400 italic text-[6px]">Belum ada item layanan.</div>`;
+            } else {
+                currentNoteItems.forEach(item => {
+                    let unit = "Kg";
+                    if (item.category === 'BIJIAN') unit = "Pcs";
+                    if (item.category === 'METERAN') unit = "m";
+
+                    const itemTotal = Math.round(item.qty * item.harga);
+                    const div = document.createElement('div');
+                    div.className = "flex justify-between items-center gap-1.5";
+                    const itemIcon = item.icon || "fa-tag";
+                    div.innerHTML = `
+                        <span class="flex items-center gap-1 truncate max-w-[140px]">
+                            <i class="fa-solid ${itemIcon} text-sky-500 text-[5px] shrink-0"></i>
+                            <span class="truncate">[${item.category}] ${item.namaLayanan} (${item.qty} ${unit})</span>
+                        </span>
+                        <span class="font-bold shrink-0">Rp ${formatRupiah(itemTotal)}</span>
+                    `;
+                    bubbleItemsContainer.appendChild(div);
+                });
+            }
+
+            document.getElementById('bubble-no-nota').textContent = noNotaVal;
+            document.getElementById('bubble-pelanggan').textContent = pelanggan || "Tanpa Nama";
+            document.getElementById('bubble-total').textContent = `Rp ${formatRupiah(grandTotal)}`;
+
+            // Render Struk Visual Nota JPG/PNG
+            document.getElementById('render-note-number').textContent = noNotaVal;
+            document.getElementById('render-cust-name').textContent = pelanggan || "Tanpa Nama";
+            document.getElementById('render-note-date').textContent = tanggal;
+            document.getElementById('render-cust-address').textContent = alamat;
+            
+            const renderItemsContainer = document.getElementById('render-items-container');
+            renderItemsContainer.innerHTML = "";
+
+            if (currentNoteItems.length === 0) {
+                renderItemsContainer.innerHTML = `<p class="text-slate-400 italic text-center text-[8px] py-2">Belum ada item layanan.</p>`;
+            } else {
+                currentNoteItems.forEach(item => {
+                    let unit = "Kg";
+                    if (item.category === 'BIJIAN') unit = "Pcs";
+                    if (item.category === 'METERAN') unit = "Meter";
+
+                    const itemTotal = Math.round(item.qty * item.harga);
+                    const itemIcon = item.icon || "fa-tag";
+                    const div = document.createElement('div');
+                    div.className = "flex justify-between items-start text-slate-700";
+                    div.innerHTML = `
+                        <div class="flex items-start gap-1.5">
+                            <i class="fa-solid ${itemIcon} text-sky-500 mt-0.5 text-[8px] shrink-0"></i>
+                            <div>
+                                <p class="font-extrabold text-slate-800 text-[9px]">[${item.category}] ${item.namaLayanan}</p>
+                                <p class="text-[7.5px] text-slate-400 mt-0.5">${item.qty} ${unit} x Rp ${formatRupiah(item.harga)}</p>
+                            </div>
+                        </div>
+                        <span class="font-bold text-slate-900 text-[9px] shrink-0">Rp ${formatRupiah(itemTotal)}</span>
+                    `;
+                    renderItemsContainer.appendChild(div);
+                });
+            }
+
+            document.getElementById('render-plastic-total').textContent = `Rp ${formatRupiah(plastik)}`;
+            document.getElementById('render-parfum-name').textContent = parfum;
+            document.getElementById('render-keterangan').textContent = `"${keterangan}"`;
+            document.getElementById('render-subtotal').textContent = `Rp ${formatRupiah(subtotal)}`;
+            document.getElementById('render-diskon').textContent = `- Rp ${formatRupiah(diskon)}`;
+            document.getElementById('render-grand-total').textContent = `Rp ${formatRupiah(grandTotal)}`;
+
+            const statusEl = document.getElementById('render-status');
+            statusEl.textContent = status;
+            if (status === "LUNAS") {
+                statusEl.className = "font-extrabold bg-emerald-50 text-emerald-600 border border-emerald-100 px-1.5 py-0.5 rounded-full uppercase scale-90";
+            } else {
+                statusEl.className = "font-extrabold bg-rose-50 text-rose-600 border border-rose-100 px-1.5 py-0.5 rounded-full uppercase scale-90";
+            }
+        }
+
+
+        function compileWAFormatText() {
+            const plastik = parseInt(notePlastik.value) || 0;
+            const diskon = parseInt(noteDiskon.value) || 0;
+            
+            let subtotalLayanan = 0;
+            let listText = "";
+
+            currentNoteItems.forEach((item, index) => {
+                let unitLabel = "Kg";
+                if (item.category === 'BIJIAN') unitLabel = "Pcs";
+                if (item.category === 'METERAN') unitLabel = "Meter";
+
+                const subItem = Math.round(item.qty * item.harga);
+                subtotalLayanan += subItem;
+
+                listText += `${index + 1}. [${item.category}] ${item.namaLayanan}\n   ${item.qty.toFixed(1)} ${unitLabel} x ${item.harga} = Rp ${subItem}\n`;
+            });
+
+            const subtotal = subtotalLayanan + plastik;
+            const totalAkhir = Math.max(0, subtotal - diskon);
+
+            return `*NOTA ELEKTRONIK (MODEL HYBRID)*
+
+${appConfig.laundryName}
+${appConfig.address}
+HP : ${appConfig.phone}
+
+=======================
+No Nota :
+${noteNomor.value.trim()}
+
+Pelanggan :
+${notePelanggan.value.trim()}
+
+Tanggal Masuk    : 
+${noteTanggal.value.trim()}
+
+=======================
+RINCIAN CUCIAN :
+${listText || "Belum ada item cucian.\n"}
+- (Plastik) Rp ${plastik} 
+
+=======================
+Parfum  : ${noteParfum.value}
+Status   : ${noteStatus.value}
+
+=======================
+Keterangan : ${noteKeterangan.value.trim() || "-"}
+    
+=======================
+subTotal  =  Rp ${subtotal}
+Diskon     =  Rp ${diskon}
+Total        =  *Rp ${totalAkhir}*
+
+- Transaksi Non Tunai bisa  Transfer di ${appConfig.bankDetails} Terima kasih telah berlangganan di ${appConfig.laundryName}
+
+${appConfig.defaultLink}
+
+Terima Kasih`.trim();
+        }
+
+        function triggerWATextReceipt() {
+            const phone = noteHp.value.trim();
+            if (!phone) {
+                showToast("Silakan isi nomor WhatsApp tujuan!", "warning");
+                return;
+            }
+
+            let cleanPhone = phone.replace(/\D/g, '');
+            if (cleanPhone.startsWith('0')) cleanPhone = '62' + cleanPhone.slice(1);
+
+            const text = compileWAFormatText();
+            const url = `https://api.whatsapp.com/send?phone=${cleanPhone}&text=${encodeURIComponent(text)}`;
+            window.open(url, '_blank');
+        }
+
+        function saveNoteToDatabase() {
+            const pelanggan = notePelanggan.value.trim();
+            const hp = noteHp.value.trim();
+            const noNotaVal = noteNomor.value.trim();
+            const tanggal = noteTanggal.value.trim();
+            const status = noteStatus.value;
+            const plastik = parseInt(notePlastik.value) || 0;
+            const diskon = parseInt(noteDiskon.value) || 0;
+            const alamat = noteAlamat.value.trim() || "-";
+            const keterangan = noteKeterangan.value.trim() || "-";
+
+            if (!pelanggan) {
+                showToast("Nama pelanggan wajib diisi!", "warning");
+                return;
+            }
+            if (currentNoteItems.length === 0) {
+                showToast("Daftar item cucian tidak boleh kosong!", "warning");
+                return;
+            }
+
+            let subtotalLayanan = 0;
+            currentNoteItems.forEach(item => {
+                subtotalLayanan += Math.round(item.qty * item.harga);
+            });
+            const total = Math.max(0, subtotalLayanan + plastik - diskon);
+
+            let listHistory = getHistory();
+
+            const noteData = {
+                id: currentEditingId || Date.now(),
+                noNota: noNotaVal,
+                pelanggan: pelanggan,
+                hp: hp,
+                tanggal: tanggal,
+                items: currentNoteItems, 
+                category: currentNoteItems[0].category,
+                namaLayanan: currentNoteItems[0].namaLayanan + (currentNoteItems.length > 1 ? " & Campuran" : ""),
+                berat: currentNoteItems.reduce((acc, curr) => acc + curr.qty, 0),
+                hargaKg: currentNoteItems[0].harga,
+                plastik: plastik,
+                parfum: noteParfum.value,
+                status: status,
+                diskon: diskon,
+                alamat: alamat,
+                keterangan: keterangan,
+                total: total
+            };
+
+            if (currentEditingId) {
+                const index = listHistory.findIndex(t => t.id === currentEditingId);
+                if (index !== -1) {
+                    listHistory[index] = noteData;
+                    showToast("Nota transaksi kasir diperbarui!", "success");
+                }
+            } else {
+                listHistory.unshift(noteData);
+                showToast("Nota transaksi baru sukses disimpan!", "success");
+            }
+
+            localStorage.setItem('ellodjoyo_history', JSON.stringify(listHistory));
+            resetFormToNew();
+            switchAdminTab('dashboard');
+        }
+
+        function resetFormToNew() {
+            currentEditingId = null;
+            formNoteTitle.innerHTML = '<i class="fa-solid fa-file-signature text-sky-600"></i> Rincian Nota Baru (Hybrid)';
+            btnCancelEdit.classList.add('hidden');
+
+            notePelanggan.value = "Mb Jaju";
+            noteHp.value = "081237037342";
+            noteAlamat.value = "-";
+            notePlastik.value = appConfig.pricePlastic;
+            noteDiskon.value = "0";
+            noteParfum.value = "Sakura";
+            noteStatus.value = "BELUM BAYAR";
+            noteKeterangan.value = "-";
+
+            currentNoteItems = [];
+            itemCategorySelect.value = "KILOAN";
+            onItemCategoryChanged();
+            
+            setupNewNoteDetails();
+            renderNoteItemsTable();
+            calculateAndRenderLiveSimulator();
+        }
+
+        // ==============================================
+        // ADMIN METRICS & DASHBOARD RENDER
+        // ==============================================
+        function renderAllAdminDashboardData() {
+            const listHistory = getHistory();
+            const customersList = getCustomers();
+            
+            let revenue = 0;
+            let unpaid = 0;
+            let unpaidCount = 0;
+
+            const recentContainer = document.getElementById('recent-transactions-container');
+            recentContainer.innerHTML = "";
+            let recentsHtml = "";
+
+            listHistory.forEach(trx => {
+                if (trx.status === "LUNAS") {
+                    revenue += parseInt(trx.total) || 0;
+                } else if (trx.status === "BELUM BAYAR") {
+                    unpaid += parseInt(trx.total) || 0;
+                    unpaidCount++;
+                }
+            });
+
+            document.getElementById('stat-revenue').textContent = `Rp ${formatRupiah(revenue)}`;
+            document.getElementById('stat-unpaid').textContent = `Rp ${formatRupiah(unpaid)}`;
+            document.getElementById('stat-unpaid-desc').textContent = `${unpaidCount} Nota`;
+            document.getElementById('stat-total-customers').textContent = `${customersList.length} Orang`;
+            document.getElementById('stat-total-notes').textContent = `${listHistory.length} Transaksi`;
+
+            const recentTrxs = listHistory.slice(0, 3);
+            if (recentTrxs.length === 0) {
+                recentContainer.innerHTML = `<div class="text-center py-6 text-slate-400 text-xs italic"><i class="fa-solid fa-folder-open text-slate-300 text-xl block mb-1"></i> Belum ada transaksi kasir.</div>`;
+            } else {
+                recentTrxs.forEach(trx => {
+                    const statusClass = (trx.status === "LUNAS") ? "bg-emerald-50 text-emerald-600 border-emerald-100" : "bg-rose-50 text-rose-600 border-rose-100";
+                    const itemSummaryText = trx.items ? `${trx.items.length} Item Cucian` : `${trx.berat} Unit [Legacy]`;
+
+                    recentsHtml += `
+                        <div onclick="editNoteFromHistory(${trx.id})" class="p-3 rounded-2xl border border-slate-200 bg-slate-50/50 hover:bg-slate-100/50 transition-all flex justify-between items-center cursor-pointer gap-2 min-h-[50px]">
+                            <div class="truncate flex-1 min-w-0">
+                                <span class="text-[8px] font-bold text-sky-600 uppercase tracking-wider">${trx.noNota}</span>
+                                <h4 class="font-extrabold text-slate-800 text-xs mt-0.5 truncate uppercase">${trx.pelanggan}</h4>
+                                <p class="text-[9px] text-slate-455 font-semibold truncate">${trx.tanggal} • ${itemSummaryText}</p>
+                            </div>
+                            <div class="text-right shrink-0">
+                                <p class="font-black text-slate-800 text-xs">Rp ${formatRupiah(trx.total)}</p>
+                                <span class="inline-block text-[8px] font-extrabold border px-2 py-0.5 rounded-full mt-1 ${statusClass}">${trx.status}</span>
+                            </div>
+                        </div>
+                    `;
+                });
+                recentContainer.innerHTML = recentsHtml;
+            }
+        }
+
+
+        function editNoteFromHistory(id) {
+            const listHistory = getHistory();
+            const data = listHistory.find(t => t.id === id);
+
+            if (data) {
+                currentEditingId = data.id;
+                formNoteTitle.innerHTML = `<i class="fa-solid fa-edit text-amber-500"></i> Edit Nota: ${data.noNota}`;
+                btnCancelEdit.classList.remove('hidden');
+
+                notePelanggan.value = data.pelanggan;
+                noteHp.value = data.hp;
+                noteNomor.value = data.noNota;
+                noteTanggal.value = data.tanggal;
+                
+                notePlastik.value = data.plastik;
+                noteDiskon.value = data.diskon;
+                noteParfum.value = data.parfum;
+                noteStatus.value = data.status;
+                noteAlamat.value = data.alamat || "-";
+                noteKeterangan.value = data.keterangan;
+
+                if (data.items && data.items.length > 0) {
+                    currentNoteItems = JSON.parse(JSON.stringify(data.items));
+                } else {
+                    currentNoteItems = [{
+                        category: data.category || 'KILOAN',
+                        namaLayanan: data.namaLayanan || 'Cuci Setrika Reguler',
+                        qty: data.berat || 0,
+                        harga: data.hargaKg || 0,
+                        icon: 'fa-shirt'
+                    }];
+                }
+
+                switchAdminTab('generator');
+                renderNoteItemsTable();
+                calculateAndRenderLiveSimulator();
+                showToast("Nota hybrid dimuat di editor.", "info");
+            }
+        }
+
+        // ==============================================
+        // SISTEM PEMBUKUAN (WEEKLY & MONTHLY)
+        // ==============================================
+        function setBookkeepingTab(period) {
+            currentBookkeepingPeriod = period;
+            
+            const btnMingguan = document.getElementById('btn-book-mingguan');
+            const btnBulanan = document.getElementById('btn-book-bulanan');
+            
+            if (period === 'mingguan') {
+                btnMingguan.className = "px-3 py-1 rounded-lg text-[10px] font-bold transition-all bg-sky-600 text-white shadow-xs";
+                btnBulanan.className = "px-3 py-1 rounded-lg text-[10px] font-bold transition-all text-slate-650 hover:bg-slate-100";
+            } else {
+                btnBulanan.className = "px-3 py-1 rounded-lg text-[10px] font-bold transition-all bg-sky-600 text-white shadow-xs";
+                btnMingguan.className = "px-3 py-1 rounded-lg text-[10px] font-bold transition-all text-slate-650 hover:bg-slate-100";
+            }
+            renderBookkeepingReport();
+        }
+
+        function getWeekNumber(d) {
+            d = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
+            d.setUTCDate(d.getUTCDate() + 4 - (d.getUTCDay()||7));
+            var yearStart = new Date(Date.UTC(d.getUTCFullYear(),0,1));
+            var weekNo = Math.ceil(( ( (d - yearStart) / 86400000) + 1)/7);
+            return weekNo;
+        }
+
+        function renderBookkeepingReport() {
+            const listHistory = getHistory();
+            const tableBody = document.getElementById('bookkeeping-table-body');
+            const chartContainer = document.getElementById('bookkeeping-chart-container');
+            
+            tableBody.innerHTML = "";
+            chartContainer.innerHTML = "";
+
+            let totalRev = 0;
+            let totalUnpaid = 0;
+            let totalVol = 0;
+
+            const groups = {};
+
+            listHistory.forEach(trx => {
+                const dateObj = parseCustomDateString(trx.tanggal);
+                let groupKey = "";
+                let groupLabel = "";
+
+                if (currentBookkeepingPeriod === 'bulanan') {
+                    const months = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
+                    groupKey = `${dateObj.getFullYear()}-${String(dateObj.getMonth() + 1).padStart(2, '0')}`;
+                    groupLabel = `${months[dateObj.getMonth()]} ${dateObj.getFullYear()}`;
+                } else { 
+                    const weekNum = getWeekNumber(dateObj);
+                    const monthsShort = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agu", "Sep", "Okt", "Nov", "Des"];
+                    groupKey = `${dateObj.getFullYear()}-W${String(weekNum).padStart(2, '0')}`;
+                    groupLabel = `Minggu ${weekNum} (${monthsShort[dateObj.getMonth()]} ${dateObj.getFullYear()})`;
+                }
+
+                if (!groups[groupKey]) {
+                    groups[groupKey] = {
+                        label: groupLabel,
+                        totalCount: 0,
+                        volume: 0,
+                        lunas: 0,
+                        unpaid: 0,
+                        totalKotor: 0
+                    };
+                }
+
+                groups[groupKey].totalCount++;
+                
+                let volTrx = 0;
+                if (trx.items) {
+                    volTrx = trx.items.reduce((acc, curr) => acc + curr.qty, 0);
+                } else {
+                    volTrx = parseFloat(trx.berat) || 0;
+                }
+
+                groups[groupKey].volume += volTrx;
+                
+                const trxTotal = parseInt(trx.total) || 0;
+                if (trx.status === 'LUNAS') {
+                    groups[groupKey].lunas += trxTotal;
+                    totalRev += trxTotal;
+                } else {
+                    groups[groupKey].unpaid += trxTotal;
+                    totalUnpaid += trxTotal;
+                }
+                groups[groupKey].totalKotor += trxTotal;
+                totalVol += volTrx;
+            });
+
+            document.getElementById('book-total-revenue').textContent = `Rp ${formatRupiah(totalRev)}`;
+            document.getElementById('book-total-unpaid').textContent = `Rp ${formatRupiah(totalUnpaid)}`;
+            document.getElementById('book-total-volume').textContent = `${totalVol.toFixed(1)} Unit`;
+
+            const sortedKeys = Object.keys(groups).sort();
+            
+            if (sortedKeys.length === 0) {
+                tableBody.innerHTML = `<tr><td colspan="6" class="p-4 text-center text-slate-400 italic">Belum ada data untuk kalkulasi pembukuan.</td></tr>`;
+                chartContainer.innerHTML = `<div class="text-center py-6 text-slate-400 text-xs italic">Isi data demo atau buat transaksi terlebih dahulu.</div>`;
+                return;
+            }
+
+            sortedKeys.forEach(key => {
+                const g = groups[key];
+                const tr = document.createElement('tr');
+                tr.className = "hover:bg-slate-50 border-b border-slate-100";
+                tr.innerHTML = `
+                    <td class="p-3 font-semibold text-slate-800">${g.label}</td>
+                    <td class="p-3">${g.totalCount} Nota</td>
+                    <td class="p-3 font-medium text-indigo-600">${g.volume.toFixed(1)}</td>
+                    <td class="p-3 font-bold text-emerald-600">Rp ${formatRupiah(g.lunas)}</td>
+                    <td class="p-3 font-semibold text-rose-500">Rp ${formatRupiah(g.unpaid)}</td>
+                    <td class="p-3 font-black text-slate-800 text-right">Rp ${formatRupiah(g.totalKotor)}</td>
+                `;
+                tableBody.appendChild(tr);
+            });
+
+            // Render SVG Chart Dinamis
+            const maxVal = Math.max(...sortedKeys.map(k => groups[k].totalKotor)) || 10000;
+            const chartWidth = Math.max(500, sortedKeys.length * 110);
+            const chartHeight = 220;
+            
+            let barElements = "";
+            let labelElements = "";
+            let gridLines = "";
+
+            for (let i = 1; i <= 4; i++) {
+                const yPos = chartHeight - 40 - (i * 35);
+                const gridVal = Math.round((maxVal / 4) * i);
+                gridLines += `
+                    <line x1="50" y1="${yPos}" x2="${chartWidth - 20}" y2="${yPos}" stroke="#e2e8f0" stroke-width="1" stroke-dasharray="4" />
+                    <text x="45" y="${yPos + 4}" fill="#94a3b8" font-size="9" text-anchor="end">Rp ${formatRupiah(gridVal)}</text>
+                `;
+            }
+
+            sortedKeys.forEach((key, index) => {
+                const g = groups[key];
+                const colWidth = (chartWidth - 80) / sortedKeys.length;
+                const xPos = 60 + (index * colWidth) + (colWidth / 4);
+                const barW = colWidth / 2;
+                
+                const kotorHeight = g.totalKotor > 0 ? ((g.totalKotor / maxVal) * 140) : 0;
+                const lunasHeight = g.lunas > 0 ? ((g.lunas / maxVal) * 140) : 0;
+                
+                const yKotor = chartHeight - 40 - kotorHeight;
+                const yLunas = chartHeight - 40 - lunasHeight;
+
+                barElements += `
+                    <rect x="${xPos}" y="${yKotor}" width="${barW}" height="${kotorHeight}" rx="4" fill="#fecdd3" />
+                    <rect x="${xPos}" y="${yLunas}" width="${barW}" height="${lunasHeight}" rx="4" fill="#34d399" />
+                `;
+
+                labelElements += `
+                    <text x="${xPos + (barW / 2)}" y="${chartHeight - 15}" fill="#64748b" font-weight="bold" font-size="9" text-anchor="middle">${g.label.split(" (")[0]}</text>
+                `;
+            });
+
+            const svgContent = `
+                <svg width="${chartWidth}" height="${chartHeight}" class="mx-auto">
+                    ${gridLines}
+                    <line x1="50" y1="${chartHeight - 40}" x2="${chartWidth - 20}" y2="${chartHeight - 40}" stroke="#cbd5e1" stroke-width="2" />
+                    ${barElements}
+                    ${labelElements}
+                    <g transform="translate(60, 10)">
+                        <rect x="0" y="0" width="12" height="12" rx="3" fill="#34d399" />
+                        <text x="18" y="10" fill="#475569" font-size="9" font-weight="bold">Lunas</text>
+                        <rect x="130" y="0" width="12" height="12" rx="3" fill="#fecdd3" />
+                        <text x="148" y="10" fill="#475569" font-size="9" font-weight="bold">Piutang</text>
+                    </g>
+                </svg>
+            `;
+            chartContainer.innerHTML = svgContent;
+        }
+
+        // ==============================================
+        // RIWAYAT NOTA LIST GENERATOR (DENGAN IKON)
+        // ==============================================
+        function renderHistoryList() {
+            const listHistory = getHistory();
+            const container = document.getElementById('history-list-container');
+            const searchVal = document.getElementById('history-search').value.toLowerCase();
+            const filterVal = document.getElementById('history-filter').value;
+
+            container.innerHTML = "";
+            let htmlContent = "";
+
+            let filtered = listHistory;
+
+            if (searchVal) {
+                filtered = filtered.filter(t => t.pelanggan.toLowerCase().includes(searchVal) || t.noNota.toLowerCase().includes(searchVal));
+            }
+
+            if (filterVal !== "SEMUA") {
+                filtered = filtered.filter(t => t.status === filterVal);
+            }
+
+            if (filtered.length === 0) {
+                container.innerHTML = `<div class="text-center py-10 text-slate-400 text-xs italic"><i class="fa-solid fa-folder-open text-slate-300 text-2xl mb-2 block"></i> Tidak ada riwayat transaksi kasir yang sesuai.</div>`;
+                return;
+            }
+
+            filtered.forEach(trx => {
+                const statusClass = (trx.status === "LUNAS") ? "bg-emerald-50 text-emerald-600 border-emerald-100" : "bg-rose-50 text-rose-600 border-rose-100";
+                
+                let descText = "";
+                if (trx.items && trx.items.length > 0) {
+                    descText = trx.items.map(it => {
+                        let itUnit = it.category === 'KILOAN' ? 'Kg' : (it.category === 'BIJIAN' ? 'Pcs' : 'm');
+                        return `${it.namaLayanan} (${it.qty} ${itUnit})`;
+                    }).join(", ");
+                } else {
+                    let legacyUnit = trx.category === 'KILOAN' ? 'Kg' : (trx.category === 'BIJIAN' ? 'Pcs' : 'Meter');
+                    descText = `${trx.namaLayanan} (${trx.berat} ${legacyUnit}) [Legacy]`;
+                }
+
+                if (descText.length > 80) descText = descText.substring(0, 77) + "...";
+
+                htmlContent += `
+                    <div class="bg-white p-3.5 sm:p-4 rounded-2xl border border-slate-200 shadow-sm flex flex-col gap-3">
+                        <div class="flex-grow">
+                            <div class="flex items-center gap-2">
+                                <span class="text-[8px] sm:text-[9px] font-extrabold bg-sky-50 text-sky-700 px-2 py-0.5 rounded uppercase tracking-wider">${trx.noNota}</span>
+                                <span class="text-[8px] text-slate-455 font-semibold">${trx.tanggal}</span>
+                            </div>
+                            <h4 class="font-extrabold text-slate-800 text-xs mt-1 uppercase">${trx.pelanggan}</h4>
+                            <p class="text-[9.5px] text-slate-500 font-medium mt-0.5">${descText}</p>
+                            <p class="text-[8px] text-slate-455 italic mt-0.5">Catatan: "${trx.keterangan}"</p>
+                        </div>
+                        <div class="flex items-center justify-between gap-2 border-t border-slate-100 pt-2.5">
+                            <div class="text-left min-w-0">
+                                <p class="text-[8px] font-bold text-slate-450">Total Tagihan</p>
+                                <span class="font-black text-slate-800 text-xs sm:text-sm">Rp ${formatRupiah(trx.total)}</span>
+                                <span class="inline-block text-[8px] font-extrabold border px-2 py-0.5 rounded-full ml-1 ${statusClass} align-middle">${trx.status}</span>
+                            </div>
+                            <div class="flex gap-1 shrink-0">
+                                <button onclick="requestDeleteNoteFromHistory(${trx.id})" class="w-8 h-8 bg-rose-50 hover:bg-rose-100 text-rose-500 rounded-xl transition-all flex items-center justify-center shadow-xs" title="Hapus"><i class="fa-solid fa-trash-can text-sm"></i></button>
+                                <button onclick="editNoteFromHistory(${trx.id})" class="px-3 py-1.5 bg-sky-50 hover:bg-sky-100 text-sky-750 font-extrabold rounded-xl text-[10px] uppercase transition-all shadow-xs">Edit</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            container.innerHTML = htmlContent;
+        }
+
+        function requestDeleteNoteFromHistory(id) {
+            triggerCustomConfirm("Apakah Anda yakin ingin menghapus nota transaksi ini dari riwayat?", () => {
+                let listHistory = getHistory();
+                listHistory = listHistory.filter(t => t.id !== id);
+                localStorage.setItem('ellodjoyo_history', JSON.stringify(listHistory));
+                showToast("Nota berhasil dihapus dari arsip.", "success");
+                renderHistoryList();
+            });
+        }
+
+        function requestClearAllHistoryData() {
+            triggerCustomConfirm("PERHATIAN!\n\nApakah Anda yakin ingin menghapus seluruh riwayat nota kasir?", () => {
+                localStorage.removeItem('ellodjoyo_history');
+                showToast("Database riwayat nota telah dikosongkan.", "info");
+                renderHistoryList();
+            });
+        }
+
+        // ==============================================
+        // METODE INTEGRASI EXPORT NOTA PNG & SHARE WA
+        // ==============================================
+        function generateVisualReceipt() {
+            if (currentNoteItems.length === 0) {
+                showToast("Keranjang item nota masih kosong. Silakan tambah minimal satu item!", "warning");
+                return;
+            }
+
+            showToast("Sedang merender struk visual menjadi berkas gambar PNG...", "info");
+            
+            receiptPreviewModal.classList.remove('opacity-0', 'pointer-events-none');
+            receiptPreviewModal.querySelector('div').classList.remove('scale-95');
+
+            const outputContainer = document.getElementById('canvas-image-output-container');
+            outputContainer.innerHTML = `
+                <div class="text-center p-4">
+                    <i class="fa-solid fa-spinner animate-spin text-sky-600 text-xl"></i>
+                    <p class="text-[10px] text-slate-400 mt-2">Memproses render piksel struk HD...</p>
+                </div>
+            `;
+
+            const template = document.getElementById('visual-receipt-template');
+            
+            setTimeout(() => {
+                html2canvas(template, {
+                    scale: 2, 
+                    useCORS: true,
+                    logging: false,
+                    backgroundColor: "#ffffff"
+                }).then(canvas => {
+                    canvas.toBlob(blob => {
+                        generatedReceiptBlob = blob;
+                        const imageUrl = URL.createObjectURL(blob);
+                        
+                        outputContainer.innerHTML = `<img src="${imageUrl}" class="w-full h-auto" alt="Visual Nota Receipt">`;
+                        
+                        document.getElementById('btn-download-image').onclick = function() {
+                            downloadVisualReceiptAsPNG();
+                        };
+
+                        document.getElementById('btn-direct-wa').onclick = function() {
+                            shareVisualReceiptToWA();
+                        };
+
+                        autoCopyImageToClipboard(blob);
+
+                    }, 'image/png');
+                }).catch(err => {
+                    outputContainer.innerHTML = `<div class="text-center p-4 text-rose-500 font-bold text-xs"><i class="fa-solid fa-circle-exclamation text-lg mb-1 block"></i> Gagal merender gambar struk.</div>`;
+                    showToast("Render gagal, silakan coba lagi.", "error");
+                });
+            }, 800);
+        }
+
+        function closeReceiptPreviewModal() {
+            receiptPreviewModal.classList.add('opacity-0', 'pointer-events-none');
+            receiptPreviewModal.querySelector('div').classList.add('scale-95');
+        }
+
+        function downloadVisualReceiptAsPNG() {
+            if (!generatedReceiptBlob) return;
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(generatedReceiptBlob);
+            a.download = `Nota_${noteNomor.value.trim() || 'laundry'}.png`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            showToast("Gambar Nota Berhasil Diunduh!", "success");
+        }
+
+        async function autoCopyImageToClipboard(blob) {
+            try {
+                if (navigator.clipboard && navigator.clipboard.write) {
+                    const item = new ClipboardItem({ "image/png": blob });
+                    await navigator.clipboard.write([item]);
+                    showToast("Gambar Nota tersalin otomatis ke clipboard!", "success");
+                }
+            } catch (err) {
+                console.log("Clipboard bypass fallback aktif.");
+            }
+        }
+
+        function shareVisualReceiptToWA() {
+            const phone = noteHp.value.trim();
+            if (!phone) {
+                showToast("Masukkan No. WhatsApp Kontak Pelanggan!", "warning");
+                return;
+            }
+
+            let cleanPhone = phone.replace(/\D/g, '');
+            if (cleanPhone.startsWith('0')) cleanPhone = '62' + cleanPhone.slice(1);
+
+            downloadVisualReceiptAsPNG();
+
+            const textMessage = `*NOTA DIGITAL PREMIUM (HYBRID)*
+*${appConfig.laundryName}*
+
+Halo Kak *${notePelanggan.value.trim()}*, berikut adalah nota rincian cucian Kakak.
+
+Terima kasih banyak atas kepercayaannya! 🙏`;
+
+            const url = `https://api.whatsapp.com/send?phone=${cleanPhone}&text=${encodeURIComponent(textMessage)}`;
+            
+            showToast("Beralih membuka WhatsApp kontak tujuan...", "success");
+            setTimeout(() => {
+                window.open(url, '_blank');
+            }, 800);
+        }
+
+        // ==============================================
+        // SETUP DAN KONFIGURASI TIPE LAYANAN DAN OUTLET
+        // ==============================================
+        function loadConfigurations() {
+            const saved = localStorage.getItem('ellodjoyo_config_v2');
+            if (saved) {
+                appConfig = JSON.parse(saved);
+            }
+
+            document.getElementById('render-laundry-name').textContent = appConfig.laundryName;
+            document.getElementById('render-laundry-address').textContent = appConfig.address;
+            document.getElementById('render-laundry-phone').textContent = `HP: ${appConfig.phone}`;
+            document.getElementById('render-bank-details').textContent = appConfig.bankDetails;
+            document.getElementById('render-note-link').textContent = appConfig.defaultLink;
+
+            document.getElementById('set-laundry-name').value = appConfig.laundryName;
+            document.getElementById('set-laundry-phone').value = appConfig.phone;
+            document.getElementById('set-laundry-address').value = appConfig.address;
+            document.getElementById('set-laundry-bank').value = appConfig.bankDetails;
+            document.getElementById('set-price-plastic').value = appConfig.pricePlastic;
+            document.getElementById('set-default-link').value = appConfig.defaultLink;
+
+            populateSettingsItemDropdown();
+        }
+
+        // ==============================================
+        // CUSTOM CONFIRM MODAL CONTROLLER
+        // ==============================================
+        function triggerCustomConfirm(message, callback) {
+            confirmMsg.textContent = message;
+            confirmSuccessCallback = callback;
+            customConfirmModal.classList.remove('opacity-0', 'pointer-events-none');
+            customConfirmModal.querySelector('div').classList.remove('scale-95');
+        }
+
+        function closeCustomConfirm() {
+            customConfirmModal.classList.add('opacity-0', 'pointer-events-none');
+            customConfirmModal.querySelector('div').classList.add('scale-95');
+            confirmSuccessCallback = null;
+        }
+
+        btnConfirmCancel.onclick = function() {
+            closeCustomConfirm();
+        };
+
+        btnConfirmProceed.onclick = function() {
+            if (confirmSuccessCallback) {
+                confirmSuccessCallback();
+            }
+            closeCustomConfirm();
+        };
+
+        function populateSettingsItemDropdown() {
+            const cat = document.getElementById('set-item-category').value;
+            const selectEl = document.getElementById('set-item-name');
+            selectEl.innerHTML = "";
+
+            const items = appConfig.itemPricing[cat];
+            for (const itemName in items) {
+                const opt = document.createElement('option');
+                opt.value = itemName;
+                opt.textContent = itemName;
+                selectEl.appendChild(opt);
+            }
+            showSettingsItemPrice();
+        }
+
+        function showSettingsItemPrice() {
+            const cat = document.getElementById('set-item-category').value;
+            const itemName = document.getElementById('set-item-name').value;
+            if (!itemName) return;
+
+            const itemConfig = appConfig.itemPricing[cat][itemName];
+            if (itemConfig) {
+                document.getElementById('set-item-price').value = itemConfig.price;
+            }
+        }
+
+        function saveItemPriceConfiguration() {
+            const cat = document.getElementById('set-item-category').value;
+            const itemName = document.getElementById('set-item-name').value;
+            const newPrice = parseInt(document.getElementById('set-item-price').value) || 0;
+
+            if (!itemName) {
+                showToast("Pilih item yang ingin diedit harganya!", "warning");
+                return;
+            }
+            if (newPrice <= 0) {
+                showToast("Harga baru harus bernilai positif!", "warning");
+                return;
+            }
+
+            appConfig.itemPricing[cat][itemName].price = newPrice;
+            localStorage.setItem('ellodjoyo_config_v2', JSON.stringify(appConfig));
+            showToast(`Tarif default item "${itemName}" berhasil diubah menjadi Rp ${formatRupiah(newPrice)}!`, "success");
+            
+            onItemCategoryChanged();
+        }
+
+        function saveConfigurationSettings() {
+            appConfig.laundryName = document.getElementById('set-laundry-name').value.trim();
+            appConfig.phone = document.getElementById('set-laundry-phone').value.trim();
+            appConfig.address = document.getElementById('set-laundry-address').value.trim();
+            appConfig.bankDetails = document.getElementById('set-laundry-bank').value.trim();
+            appConfig.pricePlastic = parseInt(document.getElementById('set-price-plastic').value) || 1000;
+            appConfig.defaultLink = document.getElementById('set-default-link').value.trim();
+
+            localStorage.setItem('ellodjoyo_config_v2', JSON.stringify(appConfig));
+            showToast("Konfigurasi Toko Berhasil Diperbarui!", "success");
+            loadConfigurations();
+        }
+
+        function requestResetSettingsToDefault() {
+            triggerCustomConfirm("Apakah Anda yakin ingin mereset pengaturan ke setelan awal?", () => {
+                localStorage.removeItem('ellodjoyo_config_v2');
+                showToast("Konfigurasi direset ke setelan awal.", "info");
+                setTimeout(() => {
+                    window.location.reload();
+                }, 800);
+            });
+        }
+
+
+        function insertDemoData() {
+            const listHistory = getHistory();
+            const nowTime = Date.now();
+            
+            const demos = [
+                {
+                    id: nowTime - 100000,
+                    noNota: "TRX/260607001",
+                    pelanggan: "Mb Jaju",
+                    hp: "081237037342",
+                    tanggal: "07/06/2026 - 15:30", 
+                    items: [
+                        { category: "KILOAN", namaLayanan: "Reguler", qty: 12.5, harga: 4000, icon: "fa-shirt" },
+                        { category: "BIJIAN", namaLayanan: "Selimut", qty: 1.0, harga: 15000, icon: "fa-bed" }
+                    ],
+                    category: "KILOAN",
+                    namaLayanan: "Reguler & Campuran",
+                    berat: 13.5,
+                    hargaKg: 4000,
+                    plastik: 1000,
+                    parfum: "Sakura",
+                    status: "LUNAS",
+                    diskon: 0,
+                    alamat: "Sidorejo RT 04",
+                    keterangan: "Pakaian wangi Sakura, selimut dibungkus terpisah",
+                    total: 66000
+                },
+                {
+                    id: nowTime - 300000,
+                    noNota: "TRX/260602002",
+                    pelanggan: "Pak Budi",
+                    hp: "088229647451",
+                    tanggal: "02/06/2026 - 10:15",
+                    items: [
+                        { category: "BIJIAN", namaLayanan: "Sepatu Dewasa", qty: 2.0, harga: 25000, icon: "fa-shoe-prints" }
+                    ],
+                    category: "BIJIAN",
+                    namaLayanan: "Sepatu Dewasa",
+                    berat: 2,
+                    hargaKg: 25000,
+                    plastik: 1000,
+                    parfum: "Lavender",
+                    status: "BELUM BAYAR",
+                    diskon: 5000,
+                    alamat: "Pandean, Kedungtuban",
+                    keterangan: "Jangan disikat terlalu kasar",
+                    total: 46000
+                },
+                {
+                    id: nowTime - 600000,
+                    noNota: "TRX/260528003",
+                    pelanggan: "Bu Siti Latifah",
+                    hp: "08123456789",
+                    tanggal: "28/05/2026 - 16:45",
+                    items: [
+                        { category: "METERAN", namaLayanan: "Karpet Bulu", qty: 6.0, harga: 15000, icon: "fa-square" },
+                        { category: "KILOAN", namaLayanan: "Cuci Setrika", qty: 4.5, harga: 5000, icon: "fa-tshirt" }
+                    ],
+                    category: "METERAN",
+                    namaLayanan: "Karpet Bulu & Campuran",
+                    berat: 10.5,
+                    hargaKg: 15000,
+                    plastik: 2000,
+                    parfum: "Lily",
+                    status: "LUNAS",
+                    diskon: 0,
+                    alamat: "Desa Sidorejo",
+                    keterangan: "Ambil mandiri oleh driver",
+                    total: 114500
+                }
+            ];
+
+            demos.forEach(d => {
+                const exist = listHistory.find(existTrx => existTrx.noNota === d.noNota);
+                if (!exist) listHistory.unshift(d);
+            });
+            
+            localStorage.setItem('ellodjoyo_history', JSON.stringify(listHistory));
+            showToast("Transaksi Demo Hybrid berhasil diisikan!", "success");
+            renderAllAdminDashboardData();
+        }
+
+        // ==============================================
+        // INITIALIZATION SAAT APLIKASI WEB DIMUAT
+        // ==============================================
+        window.onload = function() {
+            loadConfigurations();
+            getCustomers(); 
+            
+            const formInputs = [
+                notePelanggan, noteHp, noteNomor, noteTanggal, 
+                notePlastik, noteDiskon, noteParfum, 
+                noteStatus, noteAlamat, noteKeterangan
+            ];
+            formInputs.forEach(input => {
+                input.addEventListener('input', calculateAndRenderLiveSimulator);
+                input.addEventListener('change', calculateAndRenderLiveSimulator);
+            });
+
+            onItemCategoryChanged();
+            switchAdminTab('dashboard');
+        };
+    </script>
+</body>
+</html>
